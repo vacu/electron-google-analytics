@@ -1,0 +1,25 @@
+{
+  "name": "google_analytics",
+  "version": "1.0.0",
+  "description": "A library to implement Google Analytics in desktop apps.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "google",
+    "analytics",
+    "google"
+  ],
+  "author": "Eastercow",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "request": "^2.79.0",
+    "uuid": "^3.0.1"
+  }
+}
