@@ -3,7 +3,8 @@ const uuidV4 = require('uuid/v4');
 const _ = require('lodash');
 
 class Analytics {
-  constructor(trackingID, version = 1) {
+  constructor(trackingID, debug = false, version = 1) {
+    this.debug = debug;
     this.baseURL = 'https://www.google-analytics.com';
     this.debugURL = '/debug';
     this.collectURL = '/collect';
@@ -49,18 +50,19 @@ class Analytics {
         cid: clientID || uuidV4(),
         t: hitType
       };
+      let url = `${this.baseURL}${this.collectURL}`;
 
       if (params) _.extend(formObj, params);
+      if (this.debug) {
+        url = `${this.baseURL}${this.debugURL}${this.collectURL}`;
+      }
 
       return request.post({
-        url: `${this.baseURL}${this.collectURL}`,
+        url: url,
         form: formObj
       }, (err, httpResponse, body) => {
         if (err) return reject(err);
-
-        if (httpResponse === 200) {
-          return resolve({ clientID });
-        }
+        if (httpResponse === 200) return resolve({ clientID });
 
         return reject({ httpResponse, body });
       })
