@@ -1,6 +1,11 @@
+sudo: false
+
 language: node_js
+
 node_js:
-  - "6"
+  - 7
+  - 6
+
 env:
   - CXX=g++-4.8
 addons:
@@ -9,3 +14,10 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+install:
+  - export CXX="g++-4.8"
+  - npm install -g npm@latest
+  - npm install
+
+script:
+  - npm test

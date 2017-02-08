@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "test": "mocha --compilers js:babel-register"
+    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-register"
   },
   "keywords": [
     "google",
