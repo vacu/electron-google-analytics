@@ -14,6 +14,10 @@
   ],
   "author": "Eastercow <eastercowz@gmail.com> (http://eastercowz.com)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vacu/electron-google-analytics.git"
+  }
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-core": "^6.22.1",
