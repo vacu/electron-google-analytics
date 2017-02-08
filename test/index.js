@@ -2,7 +2,7 @@ import chai from 'chai';
 import Analytics from '../src/index';
 
 const expect = chai.expect;
-const trackingID = '';
+const trackingID = process.env.TRACKING_ID;
 
 describe('Analytics', function() {
   it('should fail sending a pageview request', function() {
@@ -19,7 +19,7 @@ describe('Analytics', function() {
   it('should send a pageview request', function() {
     const analytics = new Analytics(trackingID, { debug: true });
 
-    return analytics.pageview('http://example.com', 'test', 'test')
+    return analytics.pageview('http://example.com', '/test', 'Test')
     .then((response) => {
       return expect(response).to.have.property('clientID');
     }).catch((err) => {

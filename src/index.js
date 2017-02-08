@@ -33,9 +33,9 @@ class Analytics {
    * @param  {string} hostname Document hostname
    * @param  {string} clientID uuidV4
    *
-   * @return {Object}
+   * @return {Promise}
    */
-  pageview(url, title, hostname, clientID) {
+  pageview(hostname, url, title, clientID) {
     const params = { dh: hostname, dp: url, dt: title };
     return this.send('pageview', params, clientID);
   }
@@ -49,7 +49,7 @@ class Analytics {
    * @param  {string} evLabel    Event label
    * @param  {string} evValue    Event description
    *
-   * @return {Object}
+   * @return {Promise}
    */
   event(evCategory, evAction, { evLabel, evValue, clientID } = {}) {
     let params = { ec: evCategory, ea: evAction };
@@ -70,7 +70,7 @@ class Analytics {
    * @param  {string} screenName     Screen name / Content description
    * @param  {string} clientID       uuidV4
    *
-   * @return {Object}
+   * @return {Promise}
    */
   screen(appName, appVer, appID, appInstallerID, screenName, clientID) {
     let params = {
@@ -91,7 +91,7 @@ class Analytics {
    * @param  {string} clientID Unique identifier (uuidV4)
    * @param  {Object} params   Options
    *
-   * @return {Object}
+   * @return {Promise}
    */
   send(hitType, params, clientID) {
     return new Promise((resolve, reject) => {

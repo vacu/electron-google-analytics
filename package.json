@@ -1,5 +1,5 @@
 {
-  "name": "google_analytics",
+  "name": "electron-google-analytics",
   "version": "0.0.1",
   "description": "A library to implement Google Analytics in desktop apps.",
   "main": "index.js",
@@ -12,13 +12,14 @@
     "analytics",
     "google analytics"
   ],
-  "author": "Eastercow",
+  "author": "Eastercow <eastercowz@gmail.com> (http://eastercowz.com)",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-core": "^6.22.1",
     "babel-register": "^6.22.0",
     "chai": "^3.5.0",
+    "cross-env": "^3.1.4",
     "mocha": "^3.2.0"
   },
   "dependencies": {
