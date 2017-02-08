@@ -2,7 +2,7 @@
   "name": "electron-google-analytics",
   "version": "0.0.2",
   "description": "A library to implement Google Analytics in desktop apps.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "build": "babel src -d lib",
     "test": "mocha --compilers js:babel-register"
