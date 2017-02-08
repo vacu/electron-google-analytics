@@ -37,7 +37,7 @@ class Analytics {
    */
   pageview(url, title, hostname, clientID) {
     const params = { dh: hostname, dp: url, dt: title };
-    return this._send('pageview', params, clientID);
+    return this.send('pageview', params, clientID);
   }
 
   /**
@@ -51,13 +51,13 @@ class Analytics {
    *
    * @return {Object}
    */
-  event(evCategory, evAction, clientID, evLabel, evValue) {
+  event(evCategory, evAction, { evLabel, evValue, clientID } = {}) {
     let params = { ec: evCategory, ea: evAction };
 
     if (evLabel) params['el'] = evLabel;
     if (evValue) params['ev'] = evValue;
 
-    return this._send('event', params, clientID);
+    return this.send('event', params, clientID);
   }
 
   /**
@@ -81,7 +81,7 @@ class Analytics {
       cd: screenName
     };
 
-    return this._send('screenview', params, clientID);
+    return this.send('screenview', params, clientID);
   }
 
   /**
@@ -93,7 +93,7 @@ class Analytics {
    *
    * @return {Object}
    */
-  _send(hitType, params, clientID) {
+  send(hitType, params, clientID) {
     return new Promise((resolve, reject) => {
       let formObj = {
         v: this.version,
