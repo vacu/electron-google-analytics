@@ -73,7 +73,7 @@ class Analytics {
    * @return {Promise}
    */
   screen(appName, appVer, appID, appInstallerID, screenName, clientID) {
-    let params = {
+    const params = {
       an: appName,
       av: appVer,
       aid: appID,
@@ -82,6 +82,66 @@ class Analytics {
     };
 
     return this.send('screenview', params, clientID);
+  }
+
+  /**
+   * Send a "transaction" request
+   *
+   * @param  {string} trnID    Transaction ID
+   * @param  {string} trnAffil Transaction affiliation
+   * @param  {string} trnRev   Transaction Revenue
+   * @param  {Number} trnShip  Transaction shipping
+   * @param  {Number} trnTax   Transaction tax
+   * @param  {string} currCode Currency code
+   * @param  {string} clientID uuidV4
+   *
+   * @return {Promise}
+   */
+  transaction(trnID, { trnAffil, trnRev, trnShip, trnTax, currCode } = {}, clientID) {
+    let params = { ti: trnID };
+
+    if (trnAffil) params['ta'] = trnAffil;
+    if (trnRev) params['tr'] = trnRev;
+    if (trnShip) params['ts'] = trnShip;
+    if (trnTax) params['tt'] = trnTax;
+    if (currCode) params['cu'] = currCode;
+
+    return this.send('transaction', params, clientID);
+  }
+
+  /**
+   * Send a "social" request
+   *
+   * @param  {string} socialAction  Social Action
+   * @param  {string} socialNetwork Social Network
+   * @param  {string} socialTarget  Social Target
+   * @param  {string} clientID      uuidV4
+   *
+   * @return {Promise}
+   */
+  social(socialAction, socialNetwork, socialTarget, clientID) {
+    const params = {
+      sa: socialAction,
+      sn: socialNetwork,
+      st: socialTarget
+    };
+
+    return this.send('social', params, clientID);
+  }
+
+  /**
+   * Sned a "exception" request
+   *
+   * @param  {string} exDesc   Exception description
+   * @param  {Number} exFatal  Exception is fatal?
+   * @param  {string} clientID uuidV4
+   *
+   * @return {Promise}
+   */
+  exception(exDesc, exFatal, clientID) {
+    const params = { exd: exDesc, exf: exFatal };
+
+    return this.send('exception', params, clientID);
   }
 
   /**

@@ -39,6 +39,36 @@ describe('Analytics', function() {
       });
     });
 
+    it('should send a transaction request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.transaction(123).then((response) => {
+        return expect(response).to.have.property('clientID');
+      }).catch((err) => {
+        return expect(err).to.be.empty;
+      });
+    });
+
+    it('should send a social request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.social('like', 'facebook', 'home').then((response) => {
+        return expect(response).to.have.property('clientID');
+      }).catch((err) => {
+        return expect(err).to.be.empty;
+      });
+    });
+
+    it('should send a social request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.exception('IOException', 1).then((response) => {
+        return expect(response).to.have.property('clientID');
+      }).catch((err) => {
+        return expect(err).to.be.empty;
+      });
+    });
+
     it('should send a custom request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
@@ -78,6 +108,36 @@ describe('Analytics', function() {
 
     return analytics.screen('test', '1.0.0', 'com.app.test', 'com.app.installer', 'Test')
     .then((response) => {
+      return expect(response).to.be.empty;
+    }).catch((err) => {
+      return expect(err).to.not.be.empty;
+    });
+  });
+
+  it('should fail sending a transaction request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.transaction(123).then((response) => {
+      return expect(response).to.be.empty;
+    }).catch((err) => {
+      return expect(err).to.not.be.empty;
+    });
+  });
+
+  it('should fail sending a social request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.social('like', 'facebook', 'home').then((response) => {
+      return expect(response).to.be.empty;
+    }).catch((err) => {
+      return expect(err).to.not.be.empty;
+    });
+  });
+
+  it('should fail sending a social request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.exception('IOException', 1).then((response) => {
       return expect(response).to.be.empty;
     }).catch((err) => {
       return expect(err).to.not.be.empty;

@@ -62,6 +62,39 @@ npm i electron-google-analytics
     });
   ```
 
+* Transaction
+
+  `Analytics#transaction(trnID, { trnAffil, trnRev, trnShip, trnTax, currCode } = {}, clientID)`
+  ```javascript
+  return analytics.transaction(123).then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+
+* Social
+
+  `Analytics#social(socialAction, socialNetwork, socialTarget, clientID)`
+  ```javascript
+  return analytics.social('like', 'facebook', 'home').then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+
+* Exception
+
+  `Analytics#exception(exDesc, exFatal, clientID)`
+  ```javascript
+  return analytics.exception('IOException', 1).then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+
 * Send (for everything else for now)
 
   `Analytics#send(hitType, params, clientID)`
