@@ -1,6 +1,6 @@
 ### Google Analytics - [Measurement Protocol API](https://developers.google.com/analytics/devguides/collection/protocol/v1/)
 
-![travis-ci](https://travis-ci.org/vacu/electron-google-analytics.svg?branch=master)
+[![travis-ci](https://travis-ci.org/vacu/electron-google-analytics.svg?branch=master)](https://travis-ci.org/vacu/electron-google-analytics)
 
 
 The main purpose of this was to be used with [Electron](http://electron.atom.io/) built apps.
