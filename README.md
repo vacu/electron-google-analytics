@@ -9,6 +9,9 @@ The main purpose of this was to be used with [Electron](http://electron.atom.io/
 * Pageview
 * Event
 * Screenview
+* Transaction
+* Social
+* Exception
 * Custom function for the rest (send)
 
 #### Getting started
