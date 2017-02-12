@@ -12,6 +12,7 @@ The main purpose of this was to be used with [Electron](http://electron.atom.io/
 * Transaction
 * Social
 * Exception
+* Refund
 * Custom function for the rest (send)
 
 #### Getting started
