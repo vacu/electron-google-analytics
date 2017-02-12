@@ -97,6 +97,17 @@ npm i electron-google-analytics
       return err;
     });
   ```
+  
+* Refund
+
+  `Analytics#refund(transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID)`
+  ```javascript
+  return analytics.refund('T123').then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
 
 * Send (for everything else for now)
 

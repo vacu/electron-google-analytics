@@ -1,4 +1,5 @@
 node_modules/
 .git/
 .idea/
+dist/
 npm-debug.log
