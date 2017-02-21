@@ -1,6 +1,6 @@
-const request = require('request');
-const uuidV4 = require('uuid/v4');
-const _ = require('lodash');
+import request from 'request';
+import _ from 'lodash';
+import uuidV4 from 'uuid/v4';
 
 class Analytics {
   /**
@@ -8,21 +8,85 @@ class Analytics {
    */
   constructor(trackingID, { userAgent = '', debug = false, version = 1 }) {
     // Debug
-    this.debug = debug;
+    this._debug = debug;
 
     // User-agent
-    this.userAgent = userAgent;
+    this._userAgent = userAgent;
 
     // Links
-    this.baseURL = 'https://www.google-analytics.com';
-    this.debugURL = '/debug';
-    this.collectURL = '/collect';
-    this.batchURL = '/batch';
+    this._baseURL = 'https://www.google-analytics.com';
+    this._debugURL = '/debug';
+    this._collectURL = '/collect';
+    this._batchURL = '/batch';
 
     // Google generated ID
-    this.trackingID = trackingID;
+    this._trackingID = trackingID;
     // Google API version
-    this.version = version;
+    this._version = version;
+  }
+
+  get debug() {
+    return this._debug;
+  }
+
+  set debug(value) {
+    this._debug = value;
+  }
+
+  get userAgent() {
+    return this._userAgent;
+  }
+
+  set userAgent(value) {
+    this._userAgent = value;
+  }
+
+  get baseURL() {
+    return this._baseURL;
+  }
+
+  set baseURL(value) {
+    this._baseURL = value;
+  }
+
+  get debugURL() {
+    return this._debugURL;
+  }
+
+  set debugURL(value) {
+    this._debugURL = value;
+  }
+
+  get collectURL() {
+    return this._collectURL;
+  }
+
+  set collectURL(value) {
+    this._collectURL = value;
+  }
+
+  get batchURL() {
+    return this._batchURL;
+  }
+
+  set batchURL(value) {
+    this._batchURL = value;
+  }
+
+  get trackingID() {
+    return this._trackingID;
+  }
+
+  set trackingID(value) {
+    this._trackingID = value;
+  }
+
+  get version() {
+    return this._version;
+  }
+
+  set version(value) {
+    this._version = value;
   }
 
   /**
@@ -130,7 +194,7 @@ class Analytics {
   }
 
   /**
-   * Sned a "exception" request
+   * Send a "exception" request
    *
    * @param  {string} exDesc   Exception description
    * @param  {Number} exFatal  Exception is fatal?
@@ -145,6 +209,29 @@ class Analytics {
   }
 
   /**
+   * Send a "refund" request
+   *
+   * @param {string} transactionID  Transaction ID
+   * @param {string} evCategory     Event category
+   * @param {string} evAction       Event action
+   * @param {Number} nonInteraction Non-interaction parameter
+   * @param {string} clientID       uuidV4
+   *
+   * @returns {Promise}
+   */
+  refund(transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID) {
+    const params = {
+      ec: evCategory,
+      ea: evAction,
+      ni: nonInteraction,
+      ti: transactionID,
+      pa: 'refund'
+    };
+
+    return this.send('event', params, clientID);
+  }
+
+  /**
    * Send a request to google-analytics
    *
    * @param  {string} hitType  Hit type
@@ -156,30 +243,31 @@ class Analytics {
   send(hitType, params, clientID) {
     return new Promise((resolve, reject) => {
       let formObj = {
-        v: this.version,
-        tid: this.trackingID,
+        v: this._version,
+        tid: this._trackingID,
         cid: clientID || uuidV4(),
         t: hitType
       };
       if (params) _.extend(formObj, params);
 
-      let url = `${this.baseURL}${this.collectURL}`;
-      if (this.debug) {
-        url = `${this.baseURL}${this.debugURL}${this.collectURL}`;
+      let url = `${this._baseURL}${this._collectURL}`;
+      if (this._debug) {
+        url = `${this._baseURL}${this._debugURL}${this._collectURL}`;
       }
 
       let reqObj = { url: url, form: formObj };
-      if (this.userAgent !== '') {
-        reqObj['headers'] = { 'User-Agent': this.userAgent };
+      if (this._userAgent !== '') {
+        reqObj['headers'] = { 'User-Agent': this._userAgent };
       }
 
       return request.post(reqObj, (err, httpResponse, body) => {
         if (err) return reject(err);
 
-        if (httpResponse.statusCode === 200) {
-          if (this.debug) {
-            const bodyJson = JSON.parse(body);
+        let bodyJson = {};
+        if (body) bodyJson = JSON.parse(body);
 
+        if (httpResponse.statusCode === 200) {
+          if (this._debug) {
             if (bodyJson.hitParsingResult[0].valid) {
               return resolve({ clientID: formObj.cid });
             }
@@ -191,7 +279,7 @@ class Analytics {
         }
 
         return reject(bodyJson);
-      })
+      });
     });
   }
 }

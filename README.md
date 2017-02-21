@@ -12,6 +12,7 @@ The main purpose of this was to be used with [Electron](http://electron.atom.io/
 * Transaction
 * Social
 * Exception
+* Refund
 * Custom function for the rest (send)
 
 #### Getting started
@@ -92,6 +93,17 @@ npm i electron-google-analytics
   `Analytics#exception(exDesc, exFatal, clientID)`
   ```javascript
   return analytics.exception('IOException', 1).then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+  
+* Refund
+
+  `Analytics#refund(transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID)`
+  ```javascript
+  return analytics.refund('T123').then((response) => {
       return response;
     }).catch((err) => {
       return err;

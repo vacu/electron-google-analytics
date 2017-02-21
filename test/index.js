@@ -59,10 +59,20 @@ describe('Analytics', function() {
       });
     });
 
-    it('should send a social request', function() {
+    it('should send a exception request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
       return analytics.exception('IOException', 1).then((response) => {
+        return expect(response).to.have.property('clientID');
+      }).catch((err) => {
+        return expect(err).to.be.empty;
+      });
+    });
+
+    it('should send a refund request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.refund('T123').then((response) => {
         return expect(response).to.have.property('clientID');
       }).catch((err) => {
         return expect(err).to.be.empty;
@@ -134,10 +144,20 @@ describe('Analytics', function() {
     });
   });
 
-  it('should fail sending a social request', function() {
+  it('should fail sending a exception request', function() {
     const analytics = new Analytics('', { debug: true });
 
     return analytics.exception('IOException', 1).then((response) => {
+      return expect(response).to.be.empty;
+    }).catch((err) => {
+      return expect(err).to.not.be.empty;
+    });
+  });
+
+  it('should fail sending a refund request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.refund('T123').then((response) => {
       return expect(response).to.be.empty;
     }).catch((err) => {
       return expect(err).to.not.be.empty;
