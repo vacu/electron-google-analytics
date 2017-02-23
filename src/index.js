@@ -263,8 +263,11 @@ class Analytics {
       return request.post(reqObj, (err, httpResponse, body) => {
         if (err) return reject(err);
 
+
         let bodyJson = {};
-        if (body) bodyJson = JSON.parse(body);
+        if (body && (httpResponse.headers['content-type'] !== 'image/gif')) {
+          bodyJson = JSON.parse(body);
+        }
 
         if (httpResponse.statusCode === 200) {
           if (this._debug) {
@@ -278,7 +281,10 @@ class Analytics {
           return resolve({ clientID: formObj.cid });
         }
 
-        return reject(bodyJson);
+        if (httpResponse.headers['content-type'] !== 'image/gif')
+          return reject(bodyJson);
+
+        return reject(body);
       });
     });
   }
