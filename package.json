@@ -1,6 +1,6 @@
 {
   "name": "electron-google-analytics",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A library to implement Google Analytics in desktop apps.",
   "main": "lib/index.js",
   "scripts": {
