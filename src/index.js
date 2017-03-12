@@ -14,85 +14,20 @@ export default class Analytics {
    */
   constructor (trackingID, { userAgent = '', debug = false, version = 1 } = {}) {
     // Debug
-    this._debug = debug
+    this.debug = debug
 
     // User-agent
-    this._userAgent = userAgent
+    this.userAgent = userAgent
 
     // Links
-    this._baseURL = 'https://www.google-analytics.com'
-    this._debugURL = '/debug'
-    this._collectURL = '/collect'
-    this._batchURL = '/batch'
+    this.baseURL = 'https://www.google-analytics.com'
+    this.debugURL = '/debug'
+    this.collectURL = '/collect'
 
     // Google generated ID
-    this._trackingID = trackingID
+    this.trackingID = trackingID
     // Google API version
-    this._version = version
-  }
-
-  get debug () {
-    return this._debug
-  }
-
-  set debug (value) {
-    this._debug = value
-  }
-
-  get userAgent () {
-    return this._userAgent
-  }
-
-  set userAgent (value) {
-    this._userAgent = value
-  }
-
-  get baseURL () {
-    return this._baseURL
-  }
-
-  set baseURL (value) {
-    this._baseURL = value
-  }
-
-  get debugURL () {
-    return this._debugURL
-  }
-
-  set debugURL (value) {
-    this._debugURL = value
-  }
-
-  get collectURL () {
-    return this._collectURL
-  }
-
-  set collectURL (value) {
-    this._collectURL = value
-  }
-
-  get batchURL () {
-    return this._batchURL
-  }
-
-  set batchURL (value) {
-    this._batchURL = value
-  }
-
-  get trackingID () {
-    return this._trackingID
-  }
-
-  set trackingID (value) {
-    this._trackingID = value
-  }
-
-  get version () {
-    return this._version
-  }
-
-  set version (value) {
-    this._version = value
+    this.version = version
   }
 
   /**
@@ -248,16 +183,16 @@ export default class Analytics {
    */
   send (hitType, params, clientID) {
     let formObj = {
-      v: this._version,
-      tid: this._trackingID,
+      v: this.version,
+      tid: this.trackingID,
       cid: clientID || uuidV4(),
       t: hitType
     }
     if (params) Object.assign(formObj, params)
 
-    let url = `${this._baseURL}${this._collectURL}`
-    if (this._debug) {
-      url = `${this._baseURL}${this._debugURL}${this._collectURL}`
+    let url = `${this.baseURL}${this.collectURL}`
+    if (this.debug) {
+      url = `${this.baseURL}${this.debugURL}${this.collectURL}`
     }
 
     let reqObj = {
@@ -267,8 +202,8 @@ export default class Analytics {
         .map(key => `${encodeURI(key)}=${encodeURI(formObj[ key ])}`)
         .join('&')
     }
-    if (this._userAgent !== '') {
-      reqObj.headers = { 'User-Agent': this._userAgent }
+    if (this.userAgent !== '') {
+      reqObj.headers = { 'User-Agent': this.userAgent }
     }
 
     return fetch(url, reqObj)
@@ -280,7 +215,7 @@ export default class Analytics {
             )
             .then(bodyJson => {
               if (res.ok) {
-                if (this._debug) {
+                if (this.debug) {
                   if (bodyJson.hitParsingResult[ 0 ].valid) {
                     return { clientID: formObj.cid }
                   }
