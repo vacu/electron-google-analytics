@@ -25,13 +25,14 @@
     "babel-preset-env": "^1.1.8",
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.22.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
     "chai": "^3.5.0",
     "cross-env": "^3.1.4",
     "mocha": "^3.2.0",
     "standard": "^9.0.1"
   },
   "dependencies": {
-    "request": "^2.79.0",
+    "electron-fetch": "^1.0.0-aplha1",
     "uuid": "^3.0.1"
   }
 }

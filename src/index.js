@@ -1,7 +1,14 @@
-import request from 'request'
 import uuidV4 from 'uuid/v4'
+import fetch from 'electron-fetch'
 
-class Analytics {
+export class AnalyticsError extends Error {
+  constructor (text, data) {
+    super(text)
+    this.data = data
+  }
+}
+
+export default class Analytics {
   /**
    * Class constructor
    */
@@ -117,8 +124,8 @@ class Analytics {
   event (evCategory, evAction, { evLabel, evValue, clientID } = {}) {
     let params = { ec: evCategory, ea: evAction }
 
-    if (evLabel) params['el'] = evLabel
-    if (evValue) params['ev'] = evValue
+    if (evLabel) params[ 'el' ] = evLabel
+    if (evValue) params[ 'ev' ] = evValue
 
     return this.send('event', params, clientID)
   }
@@ -163,11 +170,11 @@ class Analytics {
   transaction (trnID, { trnAffil, trnRev, trnShip, trnTax, currCode } = {}, clientID) {
     let params = { ti: trnID }
 
-    if (trnAffil) params['ta'] = trnAffil
-    if (trnRev) params['tr'] = trnRev
-    if (trnShip) params['ts'] = trnShip
-    if (trnTax) params['tt'] = trnTax
-    if (currCode) params['cu'] = currCode
+    if (trnAffil) params[ 'ta' ] = trnAffil
+    if (trnRev) params[ 'tr' ] = trnRev
+    if (trnShip) params[ 'ts' ] = trnShip
+    if (trnTax) params[ 'tt' ] = trnTax
+    if (currCode) params[ 'cu' ] = currCode
 
     return this.send('transaction', params, clientID)
   }
@@ -240,53 +247,56 @@ class Analytics {
    * @return {Promise}
    */
   send (hitType, params, clientID) {
-    return new Promise((resolve, reject) => {
-      let formObj = {
-        v: this._version,
-        tid: this._trackingID,
-        cid: clientID || uuidV4(),
-        t: hitType
-      }
-      if (params) Object.assign(formObj, params)
+    let formObj = {
+      v: this._version,
+      tid: this._trackingID,
+      cid: clientID || uuidV4(),
+      t: hitType
+    }
+    if (params) Object.assign(formObj, params)
 
-      let url = `${this._baseURL}${this._collectURL}`
-      if (this._debug) {
-        url = `${this._baseURL}${this._debugURL}${this._collectURL}`
-      }
+    let url = `${this._baseURL}${this._collectURL}`
+    if (this._debug) {
+      url = `${this._baseURL}${this._debugURL}${this._collectURL}`
+    }
 
-      let reqObj = { url: url, form: formObj }
-      if (this._userAgent !== '') {
-        reqObj['headers'] = { 'User-Agent': this._userAgent }
-      }
+    let reqObj = {
+      url: url,
+      method: 'POST',
+      body: Object.keys(formObj)
+        .map(key => `${encodeURI(key)}=${encodeURI(formObj[ key ])}`)
+        .join('&')
+    }
+    if (this._userAgent !== '') {
+      reqObj.headers = { 'User-Agent': this._userAgent }
+    }
 
-      return request.post(reqObj, (err, httpResponse, body) => {
-        if (err) return reject(err)
-
-        let bodyJson = {}
-        if (body && (httpResponse.headers['content-type'] !== 'image/gif')) {
-          bodyJson = JSON.parse(body)
+    return fetch(url, reqObj)
+      .then(res => {
+        if (res.headers.get('content-type') !== 'image/gif') {
+          return res.json()
+            .catch(() => res.text()
+              .then(text => { throw new AnalyticsError('Analytics server responded with an error: ' + text) })
+            )
+            .then(bodyJson => {
+              if (res.ok) {
+                if (this._debug) {
+                  if (bodyJson.hitParsingResult[ 0 ].valid) {
+                    return { clientID: formObj.cid }
+                  }
+                  // Debug mode is true, so print out the error
+                  console.log(JSON.stringify(bodyJson, null, 2))
+                  throw new AnalyticsError('Analytics server responded with an error', bodyJson)
+                }
+                return { clientID: formObj.cid }
+              } else {
+                throw new AnalyticsError('Analytics server responded with an error', bodyJson)
+              }
+            })
+        } else {
+          return res.text()
+            .then(text => { throw new AnalyticsError('Analytics server responded with an error: ' + text) })
         }
-
-        if (httpResponse.statusCode === 200) {
-          if (this._debug) {
-            if (bodyJson.hitParsingResult[0].valid) {
-              return resolve({ clientID: formObj.cid })
-            }
-
-            return reject(bodyJson)
-          }
-
-          return resolve({ clientID: formObj.cid })
-        }
-
-        if (httpResponse.headers['content-type'] !== 'image/gif') {
-          return reject(bodyJson)
-        }
-
-        return reject(body)
       })
-    })
   }
 }
-
-export default Analytics
