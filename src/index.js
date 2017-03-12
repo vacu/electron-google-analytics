@@ -13,30 +13,34 @@ export default class Analytics {
    * Class constructor
    *
    * @param {string} trackingID Google-provided tracking ID
-   * @param {string} userAgent
-   * @param {string} appName
-   * @param {string} appID
-   * @param {string} appVersion
-   * @param {boolean} debug
-   * @param {number} version
+   * @param {string} [clientID] Unique UUIDv4 for this client
+   * @param {string} [userAgent] User Agent
+   * @param {string} [appName] App name
+   * @param {string} [appVersion] App version
+   * @param {string} [appID] App Id
+   * @param {string} [appInstallerID] App Installer Id
+   * @param {boolean} [debug] Should use debug URL
+   * @param {number} [version] Protocol Version
    */
-  constructor (trackingID, { userAgent = '', appName, appID, appVersion, debug = false, version = 1 } = {}) {
+  constructor ({ trackingID, clientID, userAgent = '', appName, appVersion, appID, appInstallerID, debug = false, version = 1 } = {}) {
     // Debug
     this.debug = debug
 
     // User-agent & app-related stuff
     this.userAgent = userAgent
     this.appName = appName
-    this.appID = appID
     this.appVersion = appVersion
+    this.appID = appID
+    this.appInstallerID = appInstallerID
 
     // Links
     this.baseURL = 'https://www.google-analytics.com'
     this.debugURL = '/debug'
     this.collectURL = '/collect'
 
-    // Google generated ID
+    // Google generated ID & client ID
     this.trackingID = trackingID
+    this.clientID = clientID || uuidV4()
     // Google API version
     this.version = version
   }
@@ -47,13 +51,12 @@ export default class Analytics {
    * @param {string} url Url of the page
    * @param {string} title Title of the page
    * @param {string} hostname Document hostname
-   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
-  pageview (hostname, url, title, clientID) {
+  pageview (hostname, url, title) {
     const params = { dh: hostname, dp: url, dt: title }
-    return this.send('pageview', params, clientID)
+    return this.send('pageview', params)
   }
 
   /**
@@ -61,43 +64,31 @@ export default class Analytics {
    *
    * @param {string} evCategory Event category
    * @param {string} evAction Event action
-   * @param {string} [clientID]   uuidV4
    * @param {string} evLabel Event label
    * @param {string} evValue Event description
    *
    * @return {Promise}
    */
-  event (evCategory, evAction, { evLabel, evValue, clientID } = {}) {
+  event (evCategory, evAction, { evLabel, evValue } = {}) {
     let params = { ec: evCategory, ea: evAction }
 
-    if (evLabel) params[ 'el' ] = evLabel
-    if (evValue) params[ 'ev' ] = evValue
+    if (evLabel) params.el = evLabel
+    if (evValue) params.ev = evValue
 
-    return this.send('event', params, clientID)
+    return this.send('event', params)
   }
 
   /**
    * Send a "screenview" request
    *
-   * @param {string} appName App name
-   * @param {string} appVer App version
-   * @param {string} appID App Id
-   * @param {string} appInstallerID App Installer Id
    * @param {string} screenName Screen name / Content description
-   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
-  screen (appName, appVer, appID, appInstallerID, screenName, clientID) {
-    const params = {
-      an: appName,
-      av: appVer,
-      aid: appID,
-      aiid: appInstallerID,
-      cd: screenName
-    }
+  screen (screenName) {
+    const params = { cd: screenName }
 
-    return this.send('screenview', params, clientID)
+    return this.send('screenview', params)
   }
 
   /**
@@ -109,11 +100,10 @@ export default class Analytics {
    * @param {number} trnShip Transaction shipping
    * @param {number} trnTax Transaction tax
    * @param {string} currCode Currency code
-   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
-  transaction (trnID, { trnAffil, trnRev, trnShip, trnTax, currCode } = {}, clientID) {
+  transaction (trnID, { trnAffil, trnRev, trnShip, trnTax, currCode } = {}) {
     let params = { ti: trnID }
 
     if (trnAffil) params[ 'ta' ] = trnAffil
@@ -122,7 +112,7 @@ export default class Analytics {
     if (trnTax) params[ 'tt' ] = trnTax
     if (currCode) params[ 'cu' ] = currCode
 
-    return this.send('transaction', params, clientID)
+    return this.send('transaction', params)
   }
 
   /**
@@ -131,18 +121,17 @@ export default class Analytics {
    * @param {string} socialAction Social Action
    * @param {string} socialNetwork Social Network
    * @param {string} socialTarget Social Target
-   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
-  social (socialAction, socialNetwork, socialTarget, clientID) {
+  social (socialAction, socialNetwork, socialTarget) {
     const params = {
       sa: socialAction,
       sn: socialNetwork,
       st: socialTarget
     }
 
-    return this.send('social', params, clientID)
+    return this.send('social', params)
   }
 
   /**
@@ -150,14 +139,13 @@ export default class Analytics {
    *
    * @param {string} exDesc Exception description
    * @param {number} exFatal Exception is fatal?
-   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
-  exception (exDesc, exFatal, clientID) {
+  exception (exDesc, exFatal) {
     const params = { exd: exDesc, exf: exFatal }
 
-    return this.send('exception', params, clientID)
+    return this.send('exception', params)
   }
 
   /**
@@ -167,11 +155,10 @@ export default class Analytics {
    * @param {string} evCategory Event category
    * @param {string} evAction Event action
    * @param {number} nonInteraction Non-interaction parameter
-   * @param {string} [clientID] uuidV4
    *
    * @returns {Promise}
    */
-  refund (transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID) {
+  refund (transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1) {
     const params = {
       ec: evCategory,
       ea: evAction,
@@ -180,7 +167,7 @@ export default class Analytics {
       pa: 'refund'
     }
 
-    return this.send('event', params, clientID)
+    return this.send('event', params)
   }
 
   /**
@@ -188,20 +175,20 @@ export default class Analytics {
    *
    * @param {string} hitType Hit type
    * @param {Object} params Options
-   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
-  send (hitType, params, clientID) {
+  send (hitType, params) {
     let formObj = {
       v: this.version,
       tid: this.trackingID,
-      cid: clientID || uuidV4(),
+      cid: this.clientID,
       t: hitType
     }
     if (this.appName) formObj.an = this.appName
-    if (this.appID) formObj.aid = this.appID
     if (this.appVersion) formObj.av = this.appVersion
+    if (this.appID) formObj.aid = this.appID
+    if (this.appInstallerID) formObj.aiid = this.appInstallerID
     if (params) Object.assign(formObj, params)
 
     let url = `${this.baseURL}${this.collectURL}`
