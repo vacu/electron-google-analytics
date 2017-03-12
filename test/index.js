@@ -74,6 +74,20 @@ describe('Analytics', function () {
           return expect(response).to.have.property('clientID')
         })
     })
+
+    it('should send a request customizing userAgent, appName, appID and appVersion', function () {
+      const analytics = new Analytics(trackingID, {
+        debug: true,
+        userAgent: 'test',
+        appName: 'testApp',
+        appID: 'com.example.test',
+        appVersion: '1.0'
+      })
+      return analytics.send('social', { sa: 'social', sn: 'facebook', st: 'home' })
+        .then((response) => {
+          return expect(response).to.have.property('clientID')
+        })
+    })
   }
 
   it('should fail sending a pageview request', function () {

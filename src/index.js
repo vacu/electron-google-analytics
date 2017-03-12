@@ -11,13 +11,24 @@ export class AnalyticsError extends Error {
 export default class Analytics {
   /**
    * Class constructor
+   *
+   * @param {string} trackingID Google-provided tracking ID
+   * @param {string} userAgent
+   * @param {string} appName
+   * @param {string} appID
+   * @param {string} appVersion
+   * @param {boolean} debug
+   * @param {number} version
    */
-  constructor (trackingID, { userAgent = '', debug = false, version = 1 } = {}) {
+  constructor (trackingID, { userAgent = '', appName, appID, appVersion, debug = false, version = 1 } = {}) {
     // Debug
     this.debug = debug
 
-    // User-agent
+    // User-agent & app-related stuff
     this.userAgent = userAgent
+    this.appName = appName
+    this.appID = appID
+    this.appVersion = appVersion
 
     // Links
     this.baseURL = 'https://www.google-analytics.com'
@@ -188,6 +199,9 @@ export default class Analytics {
       cid: clientID || uuidV4(),
       t: hitType
     }
+    if (this.appName) formObj.an = this.appName
+    if (this.appID) formObj.aid = this.appID
+    if (this.appVersion) formObj.av = this.appVersion
     if (params) Object.assign(formObj, params)
 
     let url = `${this.baseURL}${this.collectURL}`
