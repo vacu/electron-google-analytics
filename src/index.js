@@ -138,7 +138,7 @@ export default class Analytics {
    * @param {string} appID App Id
    * @param {string} appInstallerID App Installer Id
    * @param {string} screenName Screen name / Content description
-   * @param {string} [clientID]       uuidV4
+   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
@@ -157,11 +157,11 @@ export default class Analytics {
   /**
    * Send a "transaction" request
    *
-   * @param {string} trnID Transaction ID
+   * @param {string|number} trnID Transaction ID
    * @param {string} trnAffil Transaction affiliation
    * @param {string} trnRev Transaction Revenue
-   * @param {Number} trnShip Transaction shipping
-   * @param {Number} trnTax Transaction tax
+   * @param {number} trnShip Transaction shipping
+   * @param {number} trnTax Transaction tax
    * @param {string} currCode Currency code
    * @param {string} [clientID] uuidV4
    *
@@ -185,7 +185,7 @@ export default class Analytics {
    * @param {string} socialAction Social Action
    * @param {string} socialNetwork Social Network
    * @param {string} socialTarget Social Target
-   * @param {string} [clientID]      uuidV4
+   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
@@ -203,7 +203,7 @@ export default class Analytics {
    * Send a "exception" request
    *
    * @param {string} exDesc Exception description
-   * @param {Number} exFatal Exception is fatal?
+   * @param {number} exFatal Exception is fatal?
    * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
@@ -220,8 +220,8 @@ export default class Analytics {
    * @param {string} transactionID Transaction ID
    * @param {string} evCategory Event category
    * @param {string} evAction Event action
-   * @param {Number} nonInteraction Non-interaction parameter
-   * @param {string} [clientID]       uuidV4
+   * @param {number} nonInteraction Non-interaction parameter
+   * @param {string} [clientID] uuidV4
    *
    * @returns {Promise}
    */
@@ -242,7 +242,7 @@ export default class Analytics {
    *
    * @param {string} hitType Hit type
    * @param {Object} params Options
-   * @param {string} [clientID] Unique identifier (uuidV4)
+   * @param {string} [clientID] uuidV4
    *
    * @return {Promise}
    */
