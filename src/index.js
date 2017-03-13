@@ -211,7 +211,7 @@ class Analytics {
   /**
    * Send a "refund" request
    *
-   * @param {string} transactionID  Transaction ID
+   * @param {string} trnID          Transaction ID
    * @param {string} evCategory     Event category
    * @param {string} evAction       Event action
    * @param {Number} nonInteraction Non-interaction parameter
@@ -219,16 +219,43 @@ class Analytics {
    *
    * @returns {Promise}
    */
-  refund(transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID) {
+  refund(trnID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID) {
     const params = {
       ec: evCategory,
       ea: evAction,
       ni: nonInteraction,
-      ti: transactionID,
+      ti: trnID,
       pa: 'refund'
     };
 
     return this.send('event', params, clientID);
+  }
+
+  /**
+   * [item description]
+   * @param  {string} trnID         Transaction ID
+   * @param  {string} itemName      Item name
+   * @param  {Number} itemPrice     Item price
+   * @param  {string} itemQty       Item quantity
+   * @param  {string} itemSku       Item SKU
+   * @param  {string} itemVariation Item variation / category
+   * @param  {string} currCode      Currency code
+   * @param  {string} clientID      uuidV4
+   * @return {Promise}
+   */
+  item(trnID, itemName, { itemPrice, itemQty, itemSku, itemVariation, currCode } = {}, clientID) {
+    let params = {
+      ti: trnID,
+      in: itemName
+    };
+
+    if (itemPrice) params['ip'] = itemPrice;
+    if (itemQty) params['iq'] = itemQty;
+    if (itemSku) params['ic'] = itemSku;
+    if (itemVariation) params['iv'] = itemVariation;
+    if (currCode) params['cu'] = currCode;
+
+    return this.send('item', params, clientID);
   }
 
   /**

@@ -79,6 +79,16 @@ describe('Analytics', function() {
       });
     });
 
+    it('should send a item request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.item(123, 'Test item').then((response) => {
+        return expect(response).to.have.property('clientID');
+      }).catch((err) => {
+        return expect(err).to.be.empty;
+      });
+    });
+
     it('should send a custom request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
@@ -158,6 +168,16 @@ describe('Analytics', function() {
     const analytics = new Analytics('', { debug: true });
 
     return analytics.refund('T123').then((response) => {
+      return expect(response).to.be.empty;
+    }).catch((err) => {
+      return expect(err).to.not.be.empty;
+    });
+  });
+
+  it('should send a item request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.item(123, 'Test item').then((response) => {
       return expect(response).to.be.empty;
     }).catch((err) => {
       return expect(err).to.not.be.empty;
