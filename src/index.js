@@ -1,12 +1,11 @@
 import request from 'request';
-import _ from 'lodash';
 import uuidV4 from 'uuid/v4';
 
 class Analytics {
   /**
    * Class constructor
    */
-  constructor(trackingID, { userAgent = '', debug = false, version = 1 }) {
+  constructor(trackingID, { userAgent = '', debug = false, version = 1 } = {}) {
     // Debug
     this._debug = debug;
 
@@ -308,7 +307,7 @@ class Analytics {
         cid: clientID || uuidV4(),
         t: hitType
       };
-      if (params) _.extend(formObj, params);
+      if (params) Object.assign(formObj, params);
 
       let url = `${this._baseURL}${this._collectURL}`;
       if (this._debug) {
