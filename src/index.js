@@ -259,6 +259,39 @@ class Analytics {
   }
 
   /**
+   * [timingTrk description]
+   * @param  {string} timingCtg     Timing category
+   * @param  {string} timingVar     Timing variable
+   * @param  {Number} timingTime    Timing time
+   * @param  {string} timingLbl     Timing label
+   * @param  {Number} dns           DNS load time
+   * @param  {Number} pageDownTime  Page download time
+   * @param  {Number} redirTime     Redirect time
+   * @param  {Number} tcpConnTime   TCP connect time
+   * @param  {Number} serverResTime Server response time
+   * @param  {string} clientID      uuidV4
+   * @return {Promise}
+   */
+  timingTrk(timingCtg, timingVar, timingTime, {
+    timingLbl, dns, pageDownTime, redirTime, tcpConnTime, serverResTime
+  } = {}, clientID) {
+    let params = {
+      utc: timingCtg,
+      utv: timingVar,
+      utt: timingTime
+    };
+
+    if (timingLbl) params['url'] = timingLbl;
+    if (dns) params['dns'] = dns;
+    if (pageDownTime) params['pdt'] = pageDownTime;
+    if (redirTime) params['rrt'] = redirTime;
+    if (tcpConnTime) params['tcp'] = tcpConnTime;
+    if (serverResTime) params['srt'] = serverResTime;
+
+    return this.send('timing', params, clientID);
+  }
+
+  /**
    * Send a request to google-analytics
    *
    * @param  {string} hitType  Hit type

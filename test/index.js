@@ -89,6 +89,16 @@ describe('Analytics', function() {
       });
     });
 
+    it('should send a timing tracking request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.item('Category', 'jsonLoader').then((response) => {
+        return expect(response).to.have.property('clientID');
+      }).catch((err) => {
+        return expect(err).to.be.empty;
+      });
+    });
+
     it('should send a custom request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
@@ -174,10 +184,20 @@ describe('Analytics', function() {
     });
   });
 
-  it('should send a item request', function() {
+  it('should fail sending a item request', function() {
     const analytics = new Analytics('', { debug: true });
 
     return analytics.item(123, 'Test item').then((response) => {
+      return expect(response).to.be.empty;
+    }).catch((err) => {
+      return expect(err).to.not.be.empty;
+    });
+  });
+
+  it('should fail sending a timing tracking request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.item('Category', 'jsonLoader').then((response) => {
       return expect(response).to.be.empty;
     }).catch((err) => {
       return expect(err).to.not.be.empty;
