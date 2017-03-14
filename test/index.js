@@ -92,7 +92,7 @@ describe('Analytics', function() {
     it('should send a timing tracking request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
-      return analytics.item('Category', 'jsonLoader').then((response) => {
+      return analytics.timingTrk('Category', 'jsonLoader').then((response) => {
         return expect(response).to.have.property('clientID');
       }).catch((err) => {
         return expect(err).to.be.empty;
@@ -197,7 +197,7 @@ describe('Analytics', function() {
   it('should fail sending a timing tracking request', function() {
     const analytics = new Analytics('', { debug: true });
 
-    return analytics.item('Category', 'jsonLoader').then((response) => {
+    return analytics.timingTrk('Category', 'jsonLoader').then((response) => {
       return expect(response).to.be.empty;
     }).catch((err) => {
       return expect(err).to.not.be.empty;
