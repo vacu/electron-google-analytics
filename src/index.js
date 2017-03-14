@@ -232,7 +232,7 @@ class Analytics {
   }
 
   /**
-   * [item description]
+   * Send a "item" request
    * @param  {string} trnID         Transaction ID
    * @param  {string} itemName      Item name
    * @param  {Number} itemPrice     Item price
@@ -259,7 +259,7 @@ class Analytics {
   }
 
   /**
-   * [timingTrk description]
+   * Send a "timing tracking" request
    * @param  {string} timingCtg     Timing category
    * @param  {string} timingVar     Timing variable
    * @param  {Number} timingTime    Timing time
