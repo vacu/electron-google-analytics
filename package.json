@@ -6,6 +6,7 @@
   "scripts": {
     "build": "babel src -d lib",
     "test": "cross-env NODE_ENV=test mocha --compilers js:babel-register",
+    "test:electron": "cross-env NODE_ENV=test electron-mocha --compilers js:babel-register",
     "lint": "standard test/* src/*"
   },
   "keywords": [
@@ -29,11 +30,13 @@
     "chai": "^3.5.0",
     "cross-env": "^3.1.4",
     "dirty-chai": "^1.2.2",
+    "electron": "^1.6.2",
+    "electron-mocha": "^3.3.0",
     "mocha": "^3.2.0",
     "standard": "^9.0.1"
   },
   "dependencies": {
-    "electron-fetch": "^1.0.0-aplha1",
+    "electron-fetch": "^1.0.0-aplha4",
     "uuid": "^3.0.1"
   }
 }

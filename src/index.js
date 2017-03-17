@@ -22,7 +22,7 @@ export default class Analytics {
    * @param {boolean} [debug] Should use debug URL
    * @param {number} [version] Protocol Version
    */
-  constructor ({ trackingID, clientID, userAgent = '', appName, appVersion, appID, appInstallerID, debug = false, version = 1 } = {}) {
+  constructor (trackingID, { clientID, userAgent = '', appName, appVersion, appID, appInstallerID, debug = false, version = 1 } = {}) {
     // Debug
     this.debug = debug
 
