@@ -39,5 +39,10 @@
     "electron-fetch": "^1.0.0-aplha4",
     "request": "^2.81.0",
     "uuid": "^3.0.1"
+  },
+  "standard": {
+    "ignore": [
+      "lib"
+    ]
   }
 }

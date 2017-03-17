@@ -181,7 +181,7 @@ describe('Analytics', function () {
       .then(() => assert(false))
       .catch((err) => {
         expect(err).to.be.instanceOf(AnalyticsError)
-        expect(err).to.not.be.empty
+        expect(err).to.not.be.empty()
       })
   })
 
@@ -191,7 +191,7 @@ describe('Analytics', function () {
       .then(() => assert(false))
       .catch((err) => {
         expect(err).to.be.instanceOf(AnalyticsError)
-        expect(err).to.not.be.empty
+        expect(err).to.not.be.empty()
       })
   })
 
