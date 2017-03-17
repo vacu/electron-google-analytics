@@ -65,7 +65,7 @@ export default class Analytics {
    * @param {string} evCategory Event category
    * @param {string} evAction Event action
    * @param {string} evLabel Event label
-   * @param {string} evValue Event description
+   * @param {number} evValue Event description
    *
    * @return {Promise}
    */
@@ -168,6 +168,64 @@ export default class Analytics {
     }
 
     return this.send('event', params)
+  }
+
+  /**
+   * Send a "item" request
+   * @param {string} transactionID Transaction ID
+   * @param {string} itemName Item name
+   * @param {number} itemPrice Item price
+   * @param {string} itemQty Item quantity
+   * @param {string} itemSku Item SKU
+   * @param {string} itemVariation Item variation / category
+   * @param {string} currCode Currency code
+   * @return {Promise}
+   */
+  item (transactionID, itemName, { itemPrice, itemQty, itemSku, itemVariation, currCode } = {}) {
+    let params = {
+      ti: transactionID,
+      in: itemName
+    }
+
+    if (itemPrice) params[ 'ip' ] = itemPrice
+    if (itemQty) params[ 'iq' ] = itemQty
+    if (itemSku) params[ 'ic' ] = itemSku
+    if (itemVariation) params[ 'iv' ] = itemVariation
+    if (currCode) params[ 'cu' ] = currCode
+
+    return this.send('item', params)
+  }
+
+  /**
+   * Send a "timing tracking" request
+   * @param {string} timingCtg Timing category
+   * @param {string} timingVar Timing variable
+   * @param {number} timingTime Timing time
+   * @param {string} [timingLbl] Timing label
+   * @param {number} [dns] DNS load time
+   * @param {number} [pageDownTime] Page download time
+   * @param {number} [redirTime] Redirect time
+   * @param {number} [tcpConnTime] TCP connect time
+   * @param {number} [serverResTime] Server response time
+   * @return {Promise}
+   */
+  timingTrk (timingCtg, timingVar, timingTime, {
+    timingLbl, dns, pageDownTime, redirTime, tcpConnTime, serverResTime
+  } = {}) {
+    let params = {
+      utc: timingCtg,
+      utv: timingVar,
+      utt: timingTime
+    }
+
+    if (timingLbl) params[ 'url' ] = timingLbl
+    if (dns) params[ 'dns' ] = dns
+    if (pageDownTime) params[ 'pdt' ] = pageDownTime
+    if (redirTime) params[ 'rrt' ] = redirTime
+    if (tcpConnTime) params[ 'tcp' ] = tcpConnTime
+    if (serverResTime) params[ 'srt' ] = serverResTime
+
+    return this.send('timing', params)
   }
 
   /**

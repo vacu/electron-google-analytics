@@ -67,6 +67,22 @@ describe('Analytics', function () {
         })
     })
 
+    it('should send a item request', function () {
+      const analytics = new Analytics(trackingID, { debug: true })
+      return analytics.item('123', 'Test item')
+        .then((response) => {
+          return expect(response).to.have.property('clientID')
+        })
+    })
+
+    it('should send a timing tracking request', function () {
+      const analytics = new Analytics(trackingID, { debug: true })
+      return analytics.timingTrk('Category', 'jsonLoader', 123)
+        .then((response) => {
+          return expect(response).to.have.property('clientID')
+        })
+    })
+
     it('should send a custom request', function () {
       const analytics = new Analytics(trackingID, { debug: true })
       return analytics.send('social', { sa: 'social', sn: 'facebook', st: 'home' })
@@ -156,6 +172,26 @@ describe('Analytics', function () {
       .catch((err) => {
         expect(err).to.be.instanceOf(AnalyticsError)
         expect(err.data).not.to.be.empty()
+      })
+  })
+
+  it('should fail sending a item request', function () {
+    const analytics = new Analytics('', { debug: true })
+    return analytics.item('123', 'Test item')
+      .then(() => assert(false))
+      .catch((err) => {
+        expect(err).to.be.instanceOf(AnalyticsError)
+        expect(err).to.not.be.empty
+      })
+  })
+
+  it('should fail sending a timing tracking request', function () {
+    const analytics = new Analytics('', { debug: true })
+    return analytics.timingTrk('Category', 'jsonLoader', 123)
+      .then(() => assert(false))
+      .catch((err) => {
+        expect(err).to.be.instanceOf(AnalyticsError)
+        expect(err).to.not.be.empty
       })
   })
 
