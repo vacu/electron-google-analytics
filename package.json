@@ -5,7 +5,9 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-register"
+    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-register",
+    "test:electron": "cross-env NODE_ENV=test electron-mocha --compilers js:babel-register",
+    "lint": "standard test/* src/*"
   },
   "keywords": [
     "google",
@@ -21,15 +23,26 @@
   "devDependencies": {
     "babel-cli": "^6.24.0",
     "babel-core": "^6.24.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-preset-env": "^1.2.1",
     "babel-preset-es2015": "^6.24.0",
     "babel-register": "^6.24.0",
     "chai": "^3.5.0",
     "cross-env": "^3.2.3",
-    "mocha": "^3.2.0"
+    "dirty-chai": "^1.2.2",
+    "electron": "^1.6.2",
+    "electron-mocha": "^3.3.0",
+    "mocha": "^3.2.0",
+    "standard": "^9.0.1"
   },
   "dependencies": {
+    "electron-fetch": "^1.0.0-aplha4",
     "request": "^2.81.0",
     "uuid": "^3.0.1"
+  },
+  "standard": {
+    "ignore": [
+      "lib"
+    ]
   }
 }
