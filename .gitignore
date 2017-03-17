@@ -1,6 +1,5 @@
 node_modules/
 .git/
-.lib/
 .idea/
 dist/
 npm-debug.log
