@@ -7,82 +7,82 @@ class Analytics {
    */
   constructor(trackingID, { userAgent = '', debug = false, version = 1 } = {}) {
     // Debug
-    this._debug = debug;
+    this.globalDebug = debug;
     // User-agent
-    this._userAgent = userAgent;
+    this.globalUserAgent = userAgent;
     // Links
-    this._baseURL = 'https://www.google-analytics.com';
-    this._debugURL = '/debug';
-    this._collectURL = '/collect';
-    this._batchURL = '/batch';
+    this.globalBaseURL = 'https://www.google-analytics.com';
+    this.globalDebugURL = '/debug';
+    this.globalCollectURL = '/collect';
+    this.globalBatchURL = '/batch';
     // Google generated ID
-    this._trackingID = trackingID;
+    this.globalTrackingID = trackingID;
     // Google API version
-    this._version = version;
+    this.globalVersion = version;
   }
 
   get debug() {
-    return this._debug;
+    return this.globalDebug;
   }
 
   set debug(value) {
-    this._debug = value;
+    this.globalDebug = value;
   }
 
   get userAgent() {
-    return this._userAgent;
+    return this.globalUserAgent;
   }
 
   set userAgent(value) {
-    this._userAgent = value;
+    this.globalUserAgent = value;
   }
 
   get baseURL() {
-    return this._baseURL;
+    return this.globalBaseURL;
   }
 
   set baseURL(value) {
-    this._baseURL = value;
+    this.globalBaseURL = value;
   }
 
   get debugURL() {
-    return this._debugURL;
+    return this.globalDebugURL;
   }
 
   set debugURL(value) {
-    this._debugURL = value;
+    this.globalDebugURL = value;
   }
 
   get collectURL() {
-    return this._collectURL;
+    return this.globalCollectURL;
   }
 
   set collectURL(value) {
-    this._collectURL = value;
+    this.globalCollectURL = value;
   }
 
   get batchURL() {
-    return this._batchURL;
+    return this.globalBatchURL;
   }
 
   set batchURL(value) {
-    this._batchURL = value;
+    this.globalBatchURL = value;
   }
 
   get trackingID() {
-    return this._trackingID;
+    return this.globalTrackingID;
   }
 
   set trackingID(value) {
-    this._trackingID = value;
+    this.globalTrackingID = value;
   }
 
   get version() {
-    return this._version;
+    return this.globalVersion;
   }
 
   set version(value) {
-    this._version = value;
+    this.globalVersion = value;
   }
 
   /**
@@ -292,21 +292,21 @@ class Analytics {
   send(hitType, params, clientID) {
     return new Promise((resolve, reject) => {
       let formObj = {
-        v: this._version,
-        tid: this._trackingID,
+        v: this.globalVersion,
+        tid: this.globalTrackingID,
         cid: clientID || uuidV4(),
         t: hitType
       };
       if (params) Object.assign(formObj, params);
 
-      let url = `${this._baseURL}${this._collectURL}`;
-      if (this._debug) {
-        url = `${this._baseURL}${this._debugURL}${this._collectURL}`;
+      let url = `${this.globalBaseURL}${this.globalCollectURL}`;
+      if (this.globalDebug) {
+        url = `${this.globalBaseURL}${this.globalDebugURL}${this.globalCollectURL}`;
       }
 
       let reqObj = { url, form: formObj };
-      if (this._userAgent !== '') {
-        reqObj.headers = { 'User-Agent': this._userAgent };
+      if (this.globalUserAgent !== '') {
+        reqObj.headers = { 'User-Agent': this.globalUserAgent };
       }
 
       return request.post(reqObj, (err, httpResponse, body) => {
@@ -318,7 +318,7 @@ class Analytics {
         }
 
         if (httpResponse.statusCode === 200) {
-          if (this._debug) {
+          if (this.globalDebug) {
             if (bodyJson.hitParsingResult[0].valid) {
               return resolve({ clientID: formObj.cid });
             }
