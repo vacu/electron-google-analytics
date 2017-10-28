@@ -8,16 +8,13 @@ class Analytics {
   constructor(trackingID, { userAgent = '', debug = false, version = 1 } = {}) {
     // Debug
     this._debug = debug;
-
     // User-agent
     this._userAgent = userAgent;
-
     // Links
     this._baseURL = 'https://www.google-analytics.com';
     this._debugURL = '/debug';
     this._collectURL = '/collect';
     this._batchURL = '/batch';
-
     // Google generated ID
     this._trackingID = trackingID;
     // Google API version
@@ -117,8 +114,8 @@ class Analytics {
   event(evCategory, evAction, { evLabel, evValue, clientID } = {}) {
     let params = { ec: evCategory, ea: evAction };
 
-    if (evLabel) params['el'] = evLabel;
-    if (evValue) params['ev'] = evValue;
+    if (evLabel) params.el = evLabel;
+    if (evValue) params.ev = evValue;
 
     return this.send('event', params, clientID);
   }
@@ -160,14 +157,16 @@ class Analytics {
    *
    * @return {Promise}
    */
-  transaction(trnID, { trnAffil, trnRev, trnShip, trnTax, currCode } = {}, clientID) {
+  transaction(trnID, {
+    trnAffil, trnRev, trnShip, trnTax, currCode
+  } = {}, clientID) {
     let params = { ti: trnID };
 
-    if (trnAffil) params['ta'] = trnAffil;
-    if (trnRev) params['tr'] = trnRev;
-    if (trnShip) params['ts'] = trnShip;
-    if (trnTax) params['tt'] = trnTax;
-    if (currCode) params['cu'] = currCode;
+    if (trnAffil) params.ta = trnAffil;
+    if (trnRev) params.tr = trnRev;
+    if (trnShip) params.ts = trnShip;
+    if (trnTax) params.tt = trnTax;
+    if (currCode) params.cu = currCode;
 
     return this.send('transaction', params, clientID);
   }
@@ -183,11 +182,7 @@ class Analytics {
    * @return {Promise}
    */
   social(socialAction, socialNetwork, socialTarget, clientID) {
-    const params = {
-      sa: socialAction,
-      sn: socialNetwork,
-      st: socialTarget
-    };
+    const params = { sa: socialAction, sn: socialNetwork, st: socialTarget };
 
     return this.send('social', params, clientID);
   }
@@ -242,17 +237,16 @@ class Analytics {
    * @param  {string} clientID      uuidV4
    * @return {Promise}
    */
-  item(trnID, itemName, { itemPrice, itemQty, itemSku, itemVariation, currCode } = {}, clientID) {
-    let params = {
-      ti: trnID,
-      in: itemName
-    };
+  item(trnID, itemName, {
+    itemPrice, itemQty, itemSku, itemVariation, currCode
+  } = {}, clientID) {
+    let params = { ti: trnID, in: itemName };
 
-    if (itemPrice) params['ip'] = itemPrice;
-    if (itemQty) params['iq'] = itemQty;
-    if (itemSku) params['ic'] = itemSku;
-    if (itemVariation) params['iv'] = itemVariation;
-    if (currCode) params['cu'] = currCode;
+    if (itemPrice) params.ip = itemPrice;
+    if (itemQty) params.iq = itemQty;
+    if (itemSku) params.ic = itemSku;
+    if (itemVariation) params.iv = itemVariation;
+    if (currCode) params.cu = currCode;
 
     return this.send('item', params, clientID);
   }
@@ -274,18 +268,14 @@ class Analytics {
   timingTrk(timingCtg, timingVar, timingTime, {
     timingLbl, dns, pageDownTime, redirTime, tcpConnTime, serverResTime
   } = {}, clientID) {
-    let params = {
-      utc: timingCtg,
-      utv: timingVar,
-      utt: timingTime
-    };
+    let params = { utc: timingCtg, utv: timingVar, utt: timingTime };
 
-    if (timingLbl) params['url'] = timingLbl;
-    if (dns) params['dns'] = dns;
-    if (pageDownTime) params['pdt'] = pageDownTime;
-    if (redirTime) params['rrt'] = redirTime;
-    if (tcpConnTime) params['tcp'] = tcpConnTime;
-    if (serverResTime) params['srt'] = serverResTime;
+    if (timingLbl) params.url = timingLbl;
+    if (dns) params.dns = dns;
+    if (pageDownTime) params.pdt = pageDownTime;
+    if (redirTime) params.rrt = redirTime;
+    if (tcpConnTime) params.tcp = tcpConnTime;
+    if (serverResTime) params.srt = serverResTime;
 
     return this.send('timing', params, clientID);
   }
@@ -314,14 +304,13 @@ class Analytics {
         url = `${this._baseURL}${this._debugURL}${this._collectURL}`;
       }
 
-      let reqObj = { url: url, form: formObj };
+      let reqObj = { url, form: formObj };
       if (this._userAgent !== '') {
-        reqObj['headers'] = { 'User-Agent': this._userAgent };
+        reqObj.headers = { 'User-Agent': this._userAgent };
       }
 
       return request.post(reqObj, (err, httpResponse, body) => {
         if (err) return reject(err);
-
 
         let bodyJson = {};
         if (body && (httpResponse.headers['content-type'] !== 'image/gif')) {
@@ -340,8 +329,9 @@ class Analytics {
           return resolve({ clientID: formObj.cid });
         }
 
-        if (httpResponse.headers['content-type'] !== 'image/gif')
+        if (httpResponse.headers['content-type'] !== 'image/gif') {
           return reject(bodyJson);
+        }
 
         return reject(body);
       });
