@@ -17,6 +17,9 @@ The main purpose of this was to be used with [Electron](http://electron.atom.io/
 * User Timing Tracking
 * Custom function for the rest (send)
 
+#### [Github Page - Docs](https://vacu.github.io/electron-google-analytics/)
+https://vacu.github.io/electron-google-analytics/
+
 #### Getting started
 Installation
 ```
