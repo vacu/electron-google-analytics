@@ -112,7 +112,7 @@ class Analytics {
    * @return {Promise}
    */
   event(evCategory, evAction, { evLabel, evValue, clientID } = {}) {
-    let params = { ec: evCategory, ea: evAction };
+    const params = { ec: evCategory, ea: evAction };
 
     if (evLabel) params.el = evLabel;
     if (evValue) params.ev = evValue;
@@ -160,7 +160,7 @@ class Analytics {
   transaction(trnID, {
     trnAffil, trnRev, trnShip, trnTax, currCode
   } = {}, clientID) {
-    let params = { ti: trnID };
+    const params = { ti: trnID };
 
     if (trnAffil) params.ta = trnAffil;
     if (trnRev) params.tr = trnRev;
@@ -240,7 +240,7 @@ class Analytics {
   item(trnID, itemName, {
     itemPrice, itemQty, itemSku, itemVariation, currCode
   } = {}, clientID) {
-    let params = { ti: trnID, in: itemName };
+    const params = { ti: trnID, in: itemName };
 
     if (itemPrice) params.ip = itemPrice;
     if (itemQty) params.iq = itemQty;
@@ -268,7 +268,7 @@ class Analytics {
   timingTrk(timingCtg, timingVar, timingTime, {
     timingLbl, dns, pageDownTime, redirTime, tcpConnTime, serverResTime
   } = {}, clientID) {
-    let params = { utc: timingCtg, utv: timingVar, utt: timingTime };
+    const params = { utc: timingCtg, utv: timingVar, utt: timingTime };
 
     if (timingLbl) params.url = timingLbl;
     if (dns) params.dns = dns;
@@ -291,7 +291,7 @@ class Analytics {
    */
   send(hitType, params, clientID) {
     return new Promise((resolve, reject) => {
-      let formObj = {
+      const formObj = {
         v: this.globalVersion,
         tid: this.globalTrackingID,
         cid: clientID || uuidV4(),
@@ -304,7 +304,7 @@ class Analytics {
         url = `${this.globalBaseURL}${this.globalDebugURL}${this.globalCollectURL}`;
       }
 
-      let reqObj = { url, form: formObj };
+      const reqObj = { url, form: formObj };
       if (this.globalUserAgent !== '') {
         reqObj.headers = { 'User-Agent': this.globalUserAgent };
       }
