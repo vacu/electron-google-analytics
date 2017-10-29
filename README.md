@@ -169,4 +169,6 @@ test();
 cross-env TRACKING_ID='UA-XXXXXXXX-X' npm test
 ```
 
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXUG7T2PHHMV4)
+
 # MIT
