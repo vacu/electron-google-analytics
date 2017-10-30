@@ -107,7 +107,7 @@ npm i electron-google-analytics
 
 * Refund
 
-  `Analytics#refund(transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID)`
+  `Analytics#refund(trnID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, { prdID, prdQty } = {}, clientID)`
   ```javascript
   return analytics.refund('T123').then((response) => {
       return response;

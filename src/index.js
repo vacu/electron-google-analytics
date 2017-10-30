@@ -145,11 +145,13 @@ class Analytics {
    * @param {string} evCategory     Event category
    * @param {string} evAction       Event action
    * @param {Number} nonInteraction Non-interaction parameter
+   * @param {string} prdID          Product ID
+   * @param {Number} prdQty         Product quantity
    * @param {string} clientID       uuidV4
    *
    * @returns {Promise}
    */
-  refund(trnID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID) {
+  refund(trnID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, { prdID, prdQty } = {}, clientID) {
     const params = {
       ec: evCategory,
       ea: evAction,
@@ -157,6 +159,9 @@ class Analytics {
       ti: trnID,
       pa: 'refund'
     };
+
+    if (prdID) params.pr1id = prdID;
+    if (prdQty) params.pr1qt = prdQty;
 
     return this.send('event', params, clientID);
   }
