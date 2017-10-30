@@ -13,6 +13,7 @@ The main purpose of this was to be used with [Electron](http://electron.atom.io/
 * Social
 * Exception
 * Refund
+* Purchase
 * Item
 * User Timing Tracking
 * Custom function for the rest (send)
@@ -109,6 +110,20 @@ npm i electron-google-analytics
   `Analytics#refund(transactionID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, clientID)`
   ```javascript
   return analytics.refund('T123').then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+
+* Purchase
+
+  `Analytics#refund(hostname, url, title, transactionID, {
+    trnAffil, trnRev, trnTax, trnShip, trnCoupon,
+    prdID, prdName, prdCtg, prdBrand, prdVar, prdPos
+  } = {}, clientID)`
+  ```javascript
+  return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' }).then((response) => {
       return response;
     }).catch((err) => {
       return err;
