@@ -78,6 +78,17 @@ describe('Analytics', function() {
       });
     });
 
+    it('should send a purchase request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' })
+        .then((response) => {
+          return expect(response).to.have.property('clientID');
+        }).catch((err) => {
+          return expect(err).to.be.empty;
+        });
+    });
+
     it('should send a item request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
@@ -181,6 +192,17 @@ describe('Analytics', function() {
     }).catch((err) => {
       return expect(err).to.not.be.empty;
     });
+  });
+
+  it('should fail sending a purchase request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' })
+      .then((response) => {
+        return expect(response).to.be.empty;
+      }).catch((err) => {
+        return expect(err).to.not.be.empty;
+      });
   });
 
   it('should fail sending a item request', function() {

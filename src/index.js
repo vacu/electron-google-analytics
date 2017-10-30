@@ -21,70 +21,6 @@ class Analytics {
     this.globalVersion = version;
   }
 
-  get debug() {
-    return this.globalDebug;
-  }
-
-  set debug(value) {
-    this.globalDebug = value;
-  }
-
-  get userAgent() {
-    return this.globalUserAgent;
-  }
-
-  set userAgent(value) {
-    this.globalUserAgent = value;
-  }
-
-  get baseURL() {
-    return this.globalBaseURL;
-  }
-
-  set baseURL(value) {
-    this.globalBaseURL = value;
-  }
-
-  get debugURL() {
-    return this.globalDebugURL;
-  }
-
-  set debugURL(value) {
-    this.globalDebugURL = value;
-  }
-
-  get collectURL() {
-    return this.globalCollectURL;
-  }
-
-  set collectURL(value) {
-    this.globalCollectURL = value;
-  }
-
-  get batchURL() {
-    return this.globalBatchURL;
-  }
-
-  set batchURL(value) {
-    this.globalBatchURL = value;
-  }
-
-  get trackingID() {
-    return this.globalTrackingID;
-  }
-
-  set trackingID(value) {
-    this.globalTrackingID = value;
-  }
-
-  get version() {
-    return this.globalVersion;
-  }
-
-  set version(value) {
-    this.globalVersion = value;
-  }
-
   /**
    * Send a "pageview" request
    *
@@ -223,6 +159,55 @@ class Analytics {
     };
 
     return this.send('event', params, clientID);
+  }
+
+  /**
+   * Send a "purchase" request
+   * @param  {string} hostname      Document hostname
+   * @param  {string} url           Url of the page
+   * @param  {string} title         Title of the page
+   * @param  {string} transactionID Transaction ID
+   * @param  {string} trnAffil      Transaction affiliation
+   * @param  {string} trnRev        Transaction Revenue
+   * @param  {Number} trnTax        Transaction tax
+   * @param  {Number} trnShip       Transaction shipping
+   * @param  {string} trnCoupon     Transaction coupon
+   * @param  {string} prdID         Product ID
+   * @param  {string} prdName       Product name
+   * @param  {string} prdCtg        Product category
+   * @param  {string} prdBrand      Product brand
+   * @param  {string} prdVar        Product variant
+   * @param  {string} prdPos        Product position
+   * @param  {string} clientID      uuidV4
+   * @return {Promise}
+   */
+  purchase(hostname, url, title, transactionID, {
+    trnAffil, trnRev, trnTax, trnShip, trnCoupon,
+    prdID, prdName, prdCtg, prdBrand, prdVar, prdPos
+  } = {}, clientID) {
+    const params = {
+      dh: hostname,
+      dp: url,
+      dt: title,
+      ti: transactionID,
+      pa: 'purchase'
+    };
+
+    // Transaction params
+    if (trnAffil) params.ta = trnAffil;
+    if (trnRev) params.tr = trnRev;
+    if (trnTax) params.tt = trnTax;
+    if (trnShip) params.ts = trnShip;
+    if (trnCoupon) params.tcc = trnCoupon;
+    // Product params
+    if (prdID) params.pr1id = prdID;
+    if (prdName) params.pr1nm = prdName;
+    if (prdCtg) params.pr1ca = prdCtg;
+    if (prdBrand) params.pr1br = prdBrand;
+    if (prdVar) params.pr1va = prdVar;
+    if (prdPos) params.pr1p = prdPos;
+
+    return this.send('pageview', params, clientID);
   }
 
   /**
