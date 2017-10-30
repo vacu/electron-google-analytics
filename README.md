@@ -118,7 +118,7 @@ npm i electron-google-analytics
 
 * Purchase
 
-  `Analytics#refund(hostname, url, title, transactionID, {
+  `Analytics#purchase(hostname, url, title, transactionID, {
     trnAffil, trnRev, trnTax, trnShip, trnCoupon,
     prdID, prdName, prdCtg, prdBrand, prdVar, prdPos
   } = {}, clientID)`
