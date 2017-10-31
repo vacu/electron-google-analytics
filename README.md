@@ -16,6 +16,8 @@ The main purpose of this was to be used with [Electron](http://electron.atom.io/
 * Exception
 * Refund
 * Purchase
+* Checkout Steps
+* Checkout Options
 * Item
 * User Timing Tracking
 * Custom function for the rest (send)
@@ -126,6 +128,30 @@ npm i electron-google-analytics
   } = {}, clientID)`
   ```javascript
   return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' }).then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+
+* Checkout Steps
+
+  `Analytics#checkout(hostname, url, title, checkoutStep, checkoutOpt, {
+    prdID, prdName, prdCtg, prdBrand, prdVar, prdPrice, prdQty
+  } = {}, clientID)`
+  ```javascript
+  return analytics.checkout('http://example.com', '/test', 'Test', '1', 'Visa').then((response) => {
+      return response;
+    }).catch((err) => {
+      return err;
+    });
+  ```
+
+* Checkout Options
+
+  `Analytics#checkoutOpt(evCategory, evAction, checkoutStep, checkoutOpt, clientID)`
+  ```javascript
+  return analytics.checkoutOpt('Checkout', 'Option', '2', 'FedEx').then((response) => {
       return response;
     }).catch((err) => {
       return err;

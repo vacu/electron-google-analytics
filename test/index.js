@@ -89,6 +89,28 @@ describe('Analytics', function() {
         });
     });
 
+    it('should send a checkout request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.checkout('http://example.com', '/test', 'Test', '1', 'Visa')
+        .then((response) => {
+          return expect(response).to.have.property('clientID');
+        }).catch((err) => {
+          return expect(err).to.be.empty;
+        });
+    });
+
+    it('should send a checkoutOpt request', function() {
+      const analytics = new Analytics(trackingID, { debug: true });
+
+      return analytics.checkoutOpt('Checkout', 'Option', '2', 'FedEx')
+        .then((response) => {
+          return expect(response).to.have.property('clientID');
+        }).catch((err) => {
+          return expect(err).to.be.empty;
+        });
+    });
+
     it('should send a item request', function() {
       const analytics = new Analytics(trackingID, { debug: true });
 
@@ -198,6 +220,28 @@ describe('Analytics', function() {
     const analytics = new Analytics('', { debug: true });
 
     return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' })
+      .then((response) => {
+        return expect(response).to.be.empty;
+      }).catch((err) => {
+        return expect(err).to.not.be.empty;
+      });
+  });
+
+  it('should fail sending a checkout request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.checkout('http://example.com', '/test', 'Test', '1', 'Visa')
+      .then((response) => {
+        return expect(response).to.be.empty;
+      }).catch((err) => {
+        return expect(err).to.not.be.empty;
+      });
+  });
+
+  it('should fail sending a checkoutOpt request', function() {
+    const analytics = new Analytics('', { debug: true });
+
+    return analytics.checkoutOpt('Checkout', 'Option', '2', 'FedEx')
       .then((response) => {
         return expect(response).to.be.empty;
       }).catch((err) => {
