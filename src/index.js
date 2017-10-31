@@ -216,6 +216,68 @@ class Analytics {
   }
 
   /**
+   * Send a "checkout" request
+   * @param  {string} hostname     Document hostname
+   * @param  {string} url          Url of the page
+   * @param  {string} title        Title of the page
+   * @param  {string} checkoutStep Checkout step
+   * @param  {string} checkoutOpt  Checkout step option
+   * @param  {string} prdID        Product ID
+   * @param  {string} prdName      Product name
+   * @param  {string} prdCtg       Product category
+   * @param  {string} prdBrand     Product brand
+   * @param  {string} prdVar       Product variant
+   * @param  {Number} prdPrice     Product price
+   * @param  {Number} prdQty       Product category
+   * @param  {string} clientID     uuidV4
+   * @return {Promise}
+   */
+  checkout(hostname, url, title, checkoutStep, checkoutOpt, {
+    prdID, prdName, prdCtg, prdBrand, prdVar, prdPrice, prdQty
+  } = {}, clientID) {
+    const params = {
+      dh: hostname,
+      dp: url,
+      dt: title,
+      pa: 'checkout',
+      cos: checkoutStep,
+      col: checkoutOpt
+    };
+
+    if (prdID) params.pr1id = prdID;
+    if (prdName) params.pr1nm = prdName;
+    if (prdCtg) params.pr1ca = prdCtg;
+    if (prdBrand) params.pr1br = prdBrand;
+    if (prdVar) params.pr1va = prdVar;
+    if (prdPrice) params.pr1pr = prdPrice;
+    if (prdQty) params.pr1qt = prdQty;
+
+    return this.send('pageview', params, clientID);
+  }
+
+  /**
+   * Send a "checkout_option" request
+   * @param  {string} evCategory   Event category
+   * @param  {string} evAction     Event action
+   * @param  {string} checkoutStep Checkout step
+   * @param  {string} checkoutOpt  Checkout step option
+   * @param  {string} clientID     uuidV4
+   * @return {Promise}
+   */
+  checkoutOpt(evCategory, evAction, checkoutStep, checkoutOpt, clientID) {
+    const params = {
+      ec: evCategory,
+      ea: evAction,
+      pa: 'checkout_option'
+    };
+
+    if (checkoutStep) params.cos = checkoutStep;
+    if (checkoutOpt) params.col = checkoutOpt;
+
+    return this.send('event', params, clientID);
+  }
+
+  /**
    * Send a "item" request
    * @param  {string} trnID         Transaction ID
    * @param  {string} itemName      Item name
