@@ -193,7 +193,8 @@ npm i electron-google-analytics
   ```
 #### es5 usage
 If you are not using tools like babel to use es6 with your application, you'll have to modify your code slightly. Below is an example of a test screen view that you can use out of the box with node.js
-```
+
+```javascript
 const Analytics  = require('electron-google-analytics');
 const analytics = new Analytics.default('UA-XXXXXXXX-X');
 
@@ -207,6 +208,7 @@ function test(){
 }
 test();
 ```
+
 #### Tests
 ```
 cross-env TRACKING_ID='UA-XXXXXXXX-X' npm test
