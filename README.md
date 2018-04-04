@@ -38,6 +38,16 @@ npm i electron-google-analytics
     import Analytics from 'electron-google-analytics';
     const analytics = new Analytics('UA-XXXXXXXX-X');
     ```
+* Set (custom params)
+
+    `Analytics#set(key, value)`
+    ```javascript
+    analytics.set('uid', 123);
+    ```
+    You also can remove setted parameter like this:
+    ```javascript
+    analytics.set('uid', null);
+    ```
 
 * Pageview
 
