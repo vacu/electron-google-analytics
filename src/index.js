@@ -19,6 +19,22 @@ class Analytics {
     this.globalTrackingID = trackingID;
     // Google API version
     this.globalVersion = version;
+    this.customParams = {};
+  }
+
+  /**
+   * Adds custom parameters to requests
+   * if value is null, then parameter will be removed
+   *
+   * @param  {string} key     Parameter name
+   * @param  {string} value   Parameter value
+   */
+  set(key, value) {
+    if (value !== null) {
+      this.customParams[key] = value;
+    } else {
+      delete this.customParams[key];
+    }
   }
 
   /**
@@ -350,6 +366,10 @@ class Analytics {
         t: hitType
       };
       if (params) Object.assign(formObj, params);
+
+      if (Object.keys(this.customParams).length > 0) {
+        Object.assign(formObj, this.customParams);
+      }
 
       let url = `${this.globalBaseURL}${this.globalCollectURL}`;
       if (this.globalDebug) {
