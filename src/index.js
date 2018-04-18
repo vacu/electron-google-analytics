@@ -48,7 +48,13 @@ class Analytics {
    * @return {Promise}
    */
   pageview(hostname, url, title, clientID) {
-    const params = { dh: hostname, dp: url, dt: title };
+  // pageview(hostname, url, title, sessDuration, clientID) {
+    const params = {
+      dh: hostname,
+      dp: url,
+      dt: title
+      // sc: sessDuration
+    };
     return this.send('pageview', params, clientID);
   }
 
@@ -289,6 +295,56 @@ class Analytics {
 
     if (checkoutStep) params.cos = checkoutStep;
     if (checkoutOpt) params.col = checkoutOpt;
+
+    return this.send('event', params, clientID);
+  }
+
+  /**
+   *
+   * @param {*} hostname
+   * @param {*} url
+   * @param {*} title
+   * @param {*} param3
+   * @param {*} clientID
+   */
+  promoImp(hostname, url, title, {
+    promoID, promoName, promoCrt, promoPos
+  } = {}, clientID) {
+    const params = {
+      dh: hostname,
+      dp: url,
+      dt: title
+    };
+
+    if (promoID) params.promo1id = promoID;
+    if (promoName) params.promo1nm = promoName;
+    if (promoCrt) params.promo1cr = promoCrt;
+    if (promoPos) params.promo1ps = promoPos;
+
+    return this.send('pageview', params, clientID);
+  }
+
+  /**
+   *
+   * @param {*} evCategory
+   * @param {*} evAction
+   * @param {*} param2
+   * @param {*} clientID
+   */
+  promoCk(evCategory, evAction, {
+    evLabel, promoID, promoName, promoCrt, promoPos
+  } = {}, clientID) {
+    const params = {
+      ec: evCategory,
+      ea: evAction,
+      promos: 'click'
+    };
+
+    if (evLabel) params.el = evLabel;
+    if (promoID) params.promo1id = promoID;
+    if (promoName) params.promo1nm = promoName;
+    if (promoCrt) params.promo1cr = promoCrt;
+    if (promoPos) params.promo1ps = promoPos;
 
     return this.send('event', params, clientID);
   }
