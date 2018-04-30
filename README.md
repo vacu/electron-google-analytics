@@ -36,6 +36,7 @@ npm i electron-google-analytics
     `Analytics(trackingID, { userAgent, debug, version })`
     ```javascript
     import Analytics from 'electron-google-analytics';
+    //OR: let Analytics = require('electron-google-analytics').default;
     const analytics = new Analytics('UA-XXXXXXXX-X');
     ```
 * Set (custom params)
