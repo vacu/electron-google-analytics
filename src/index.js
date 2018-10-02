@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import request from 'request';
 import uuidV4 from 'uuid/v4';
 
@@ -394,7 +395,7 @@ class Analytics {
   } = {}, clientID) {
     const params = { utc: timingCtg, utv: timingVar, utt: timingTime };
 
-    if (timingLbl) params.url = timingLbl;
+    if (timingLbl) params.utl = timingLbl;
     if (dns) params.dns = dns;
     if (pageDownTime) params.pdt = pageDownTime;
     if (redirTime) params.rrt = redirTime;
