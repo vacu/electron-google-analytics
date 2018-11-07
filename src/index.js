@@ -3,9 +3,27 @@ import uuidV4 from 'uuid/v4';
 
 class Analytics {
   /**
-   * Class constructor
+   * @constructor
+   * @param {string}  [userAgent]     User-Agent request header
+   * @param {boolean} [debug=false]   Send hits for validation via `/debug/collect` endpoint
+   * @param {number}  [version=1]     Measurement Protocol version
+   * @param {Object}  [electronOpts]  Electron networking options when used in Electron
+   *
+   * @param {boolean} [electronOpts.useElectronNet=false] Use `electron.net` module request API
+   *                                                      instead of Node.js implementation
+   * @param {Object} [electronOpts.session]    Session instance
+   * @param {string} [electronOpts.partition]  The name of the partition
    */
-  constructor(trackingID, { userAgent = '', debug = false, version = 1 } = {}) {
+  constructor(trackingID, {
+    userAgent = '',
+    debug = false,
+    version = 1,
+    electronOpts = {
+      useElectronNet: false,
+      session: null,
+      partition: null
+    }
+  } = {}) {
     // Debug
     this.globalDebug = debug;
     // User-agent
@@ -20,6 +38,9 @@ class Analytics {
     // Google API version
     this.globalVersion = version;
     this.customParams = {};
+    this.adapter = (electronOpts && electronOpts.useElectronNet)
+      ? require('./electron-adapter').default(electronOpts) // eslint-disable-line global-require
+      : request;
   }
 
   /**
@@ -437,7 +458,7 @@ class Analytics {
         reqObj.headers = { 'User-Agent': this.globalUserAgent };
       }
 
-      return request.post(reqObj, (err, httpResponse, body) => {
+      return this.adapter.post(reqObj, (err, httpResponse, body) => {
         if (err) return reject(err);
 
         let bodyJson = {};
