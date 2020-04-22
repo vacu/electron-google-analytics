@@ -1,7 +1,7 @@
 ### Google Analytics - [Measurement Protocol API](https://developers.google.com/analytics/devguides/collection/protocol/v1/)
 
 [![travis-ci](https://travis-ci.org/vacu/electron-google-analytics.svg?branch=master)](https://travis-ci.org/vacu/electron-google-analytics)
-![](https://david-dm.org/vacu/electron-google-analytics.svg)
+[![dependencies Status](https://david-dm.org/vacu/electron-google-analytics/status.svg)](https://david-dm.org/vacu/electron-google-analytics)
 ![](https://img.shields.io/badge/code%20style-airbnb-green.svg)
 
 
