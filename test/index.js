@@ -3,7 +3,7 @@ import Analytics from '../src/index';
 
 const expect = chai.expect;
 const trackingID = (process.env.TRACKING_ID) ? process.env.TRACKING_ID : '';
-const electronOpts = { useElectronNet: process.env.USE_ELECTRON_NET };
+const electronOpts = {};
 
 describe('Analytics', function() {
   if (trackingID) {

@@ -1,20 +1,11 @@
-const { net } = require('electron');
-
-import request from 'request';
+import fetch from 'electron-fetch'
 import { v4 as uuidv4 } from 'uuid';
-
 class Analytics {
   /**
-   * @constructor
-   * @param {string}  [userAgent]     User-Agent request header
-   * @param {boolean} [debug=false]   Send hits for validation via `/debug/collect` endpoint
-   * @param {number}  [version=1]     Measurement Protocol version
-   * @param {Object}  [electronOpts]  Electron networking options when used in Electron
+   * Constructor
    *
-   * @param {boolean} [electronOpts.useElectronNet=false] Use `electron.net` module request API
-   *                                                      instead of Node.js implementation
-   * @param {Object} [electronOpts.session]    Session instance
-   * @param {string} [electronOpts.partition]  The name of the partition
+   * @param {string} trackingID
+   * @param {Object} param1
    */
   constructor(trackingID, {
     userAgent = '',
@@ -40,9 +31,6 @@ class Analytics {
     // Google API version
     this.globalVersion = version;
     this.customParams = {};
-    this.adapter = (electronOpts && electronOpts.useElectronNet)
-      ? require('./electron-adapter').default(electronOpts) // eslint-disable-line global-require
-      : request;
   }
 
   /**
@@ -441,56 +429,49 @@ class Analytics {
    * @return {Promise}
    */
   send(hitType, params, clientID) {
-    return new Promise((resolve, reject) => {
-      const formObj = {
-        v: this.globalVersion,
-        tid: this.globalTrackingID,
-        cid: clientID || uuidv4(),
-        t: hitType
-      };
-      if (params) Object.assign(formObj, params);
+    // return new Promise((resolve, reject) => {
+    const formObj = {
+      v: this.globalVersion,
+      tid: this.globalTrackingID,
+      cid: clientID || uuidv4(),
+      t: hitType
+    };
+    if (params) Object.assign(formObj, params);
 
-      if (Object.keys(this.customParams).length > 0) {
-        Object.assign(formObj, this.customParams);
-      }
+    if (Object.keys(this.customParams).length > 0) {
+      Object.assign(formObj, this.customParams);
+    }
 
-      let url = `${this.globalBaseURL}${this.globalCollectURL}`;
-      if (this.globalDebug) {
-        url = `${this.globalBaseURL}${this.globalDebugURL}${this.globalCollectURL}`;
-      }
+    let url = `${this.globalBaseURL}${this.globalCollectURL}`;
+    if (this.globalDebug) {
+      url = `${this.globalBaseURL}${this.globalDebugURL}${this.globalCollectURL}`;
+    }
 
-      const reqObj = { url, form: formObj };
-      if (this.globalUserAgent !== '') {
-        reqObj.headers = { 'User-Agent': this.globalUserAgent };
-      }
+    const reqObj = {
+      // url,
+      method: 'post',
+      body: Object.keys(formObj).map(key => `${encodeURI(key)}=${encodeURI(formObj[key])}`).join('&')
+    };
 
-      return this.adapter.post(reqObj, (err, httpResponse, body) => {
-        if (err) return reject(err);
+    if (this.globalUserAgent !== '') {
+      reqObj.headers = { 'User-Agent': this.globalUserAgent };
+    }
 
-        let bodyJson = {};
-        if (body && (httpResponse.headers['content-type'] !== 'image/gif')) {
-          bodyJson = JSON.parse(body);
-        }
 
-        if (httpResponse.statusCode === 200) {
-          if (this.globalDebug) {
-            if (bodyJson.hitParsingResult[0].valid) {
-              return resolve({ clientID: formObj.cid });
-            }
-
-            return reject(bodyJson);
+    return fetch(url, reqObj)
+      .then((res) => res.json())
+      .then((json) => {
+        if (this.globalDebug) {
+          if (json.hitParsingResult[0].valid) {
+            return { clientID: formObj.cid };
           }
-
-          return resolve({ clientID: formObj.cid });
         }
 
-        if (httpResponse.headers['content-type'] !== 'image/gif') {
-          return reject(bodyJson);
-        }
-
-        return reject(body);
+        return { clientID: formObj.cid };
+      })
+      .catch((err) => {
+        return new Error(err);
       });
-    });
   }
 }
 

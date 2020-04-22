@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "test": "cross-env NODE_ENV=test mocha --require babel-core/register",
-    "test-electron": "cross-env NODE_ENV=test USE_ELECTRON_NET=true electron-mocha --require babel-register"
+    "test": "cross-env NODE_ENV=test USE_ELECTRON_NET=true mocha --require babel-core/register"
   },
   "keywords": [
     "google",
@@ -26,8 +25,6 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
-    "electron": "^8.2.3",
-    "electron-mocha": "^5.0.0",
     "braces": ">=2.3.1",
     "chai": "^4.2.0",
     "cross-env": "^7.0.2",
@@ -37,11 +34,7 @@
     "mocha": "^7.1.1"
   },
   "dependencies": {
-    "form-urlencoded": "^3.0.0",
-    "request": "^2.88.2",
+    "electron-fetch": "^1.4.0",
     "uuid": "^7.0.3"
-  },
-  "peerDependencies": {
-    "electron": "^8.2.3"
   }
 }
