@@ -1,5 +1,7 @@
+const { net } = require('electron');
+
 import request from 'request';
-import uuidV4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 class Analytics {
   /**
@@ -418,7 +420,7 @@ class Analytics {
       const formObj = {
         v: this.globalVersion,
         tid: this.globalTrackingID,
-        cid: clientID || uuidV4(),
+        cid: clientID || uuidv4(),
         t: hitType
       };
       if (params) Object.assign(formObj, params);
