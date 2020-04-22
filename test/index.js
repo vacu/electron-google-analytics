@@ -3,11 +3,12 @@ import Analytics from '../src/index';
 
 const expect = chai.expect;
 const trackingID = (process.env.TRACKING_ID) ? process.env.TRACKING_ID : '';
+const electronOpts = { useElectronNet: process.env.USE_ELECTRON_NET };
 
 describe('Analytics', function() {
   if (trackingID) {
     it('should send a pageview request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.pageview('http://example.com', '/test', 'Test')
         .then((response) => {
@@ -18,7 +19,7 @@ describe('Analytics', function() {
     });
 
     it('should send a event request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.event('category', 'view').then((response) => {
         return expect(response).to.have.property('clientID');
@@ -28,7 +29,7 @@ describe('Analytics', function() {
     });
 
     it('should send a screenview request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.screen('test', '1.0.0', 'com.app.test', 'com.app.installer', 'Test')
         .then((response) => {
@@ -39,7 +40,7 @@ describe('Analytics', function() {
     });
 
     it('should send a transaction request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.transaction(123).then((response) => {
         return expect(response).to.have.property('clientID');
@@ -49,7 +50,7 @@ describe('Analytics', function() {
     });
 
     it('should send a social request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.social('like', 'facebook', 'home').then((response) => {
         return expect(response).to.have.property('clientID');
@@ -59,7 +60,7 @@ describe('Analytics', function() {
     });
 
     it('should send a exception request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.exception('IOException', 1).then((response) => {
         return expect(response).to.have.property('clientID');
@@ -69,7 +70,7 @@ describe('Analytics', function() {
     });
 
     it('should send a refund request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.refund('T123').then((response) => {
         return expect(response).to.have.property('clientID');
@@ -79,7 +80,7 @@ describe('Analytics', function() {
     });
 
     it('should send a purchase request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' })
         .then((response) => {
@@ -90,7 +91,7 @@ describe('Analytics', function() {
     });
 
     it('should send a checkout request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.checkout('http://example.com', '/test', 'Test', '1', 'Visa')
         .then((response) => {
@@ -101,7 +102,7 @@ describe('Analytics', function() {
     });
 
     it('should send a checkoutOpt request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.checkoutOpt('Checkout', 'Option', '2', 'FedEx')
         .then((response) => {
@@ -112,7 +113,7 @@ describe('Analytics', function() {
     });
 
     it('should send a item request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.item(123, 'Test item').then((response) => {
         return expect(response).to.have.property('clientID');
@@ -122,7 +123,7 @@ describe('Analytics', function() {
     });
 
     it('should send a timing tracking request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.timingTrk('Category', 'jsonLoader').then((response) => {
         return expect(response).to.have.property('clientID');
@@ -132,7 +133,7 @@ describe('Analytics', function() {
     });
 
     it('should send a custom request', function() {
-      const analytics = new Analytics(trackingID, { debug: true });
+      const analytics = new Analytics(trackingID, { debug: true, electronOpts });
 
       return analytics.send('social', { sa: 'social', sn: 'facebook', st: 'home' })
         .then((response) => {
@@ -145,7 +146,7 @@ describe('Analytics', function() {
 
 
   it('should fail sending a pageview request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.pageview('http://example.com', 'test', 'test')
       .then((response) => {
@@ -156,7 +157,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a event request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.event('category', 'view').then((response) => {
       return expect(response).to.be.empty;
@@ -166,7 +167,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a screenview request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.screen('test', '1.0.0', 'com.app.test', 'com.app.installer', 'Test')
       .then((response) => {
@@ -177,7 +178,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a transaction request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.transaction(123).then((response) => {
       return expect(response).to.be.empty;
@@ -187,7 +188,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a social request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.social('like', 'facebook', 'home').then((response) => {
       return expect(response).to.be.empty;
@@ -197,7 +198,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a exception request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.exception('IOException', 1).then((response) => {
       return expect(response).to.be.empty;
@@ -207,7 +208,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a refund request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.refund('T123').then((response) => {
       return expect(response).to.be.empty;
@@ -217,7 +218,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a purchase request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.purchase('http://example.com', '/test', 'Test', 'T123', { prdID: 'P123' })
       .then((response) => {
@@ -228,7 +229,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a checkout request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.checkout('http://example.com', '/test', 'Test', '1', 'Visa')
       .then((response) => {
@@ -239,7 +240,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a checkoutOpt request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.checkoutOpt('Checkout', 'Option', '2', 'FedEx')
       .then((response) => {
@@ -250,7 +251,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a item request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.item(123, 'Test item').then((response) => {
       return expect(response).to.be.empty;
@@ -260,7 +261,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a timing tracking request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.timingTrk('Category', 'jsonLoader').then((response) => {
       return expect(response).to.be.empty;
@@ -270,7 +271,7 @@ describe('Analytics', function() {
   });
 
   it('should fail sending a custom request', function() {
-    const analytics = new Analytics('', { debug: true });
+    const analytics = new Analytics('', { debug: true, electronOpts });
 
     return analytics.send('social', { sa: 'social', sn: 'facebook', st: 'home' })
       .then((response) => {
