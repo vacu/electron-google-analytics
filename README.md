@@ -1,7 +1,7 @@
 ### Google Analytics - [Measurement Protocol API](https://developers.google.com/analytics/devguides/collection/protocol/v1/)
 
 [![travis-ci](https://travis-ci.org/vacu/electron-google-analytics.svg?branch=master)](https://travis-ci.org/vacu/electron-google-analytics)
-![](https://david-dm.org/vacu/electron-google-analytics.svg)
+[![dependencies Status](https://david-dm.org/vacu/electron-google-analytics/status.svg)](https://david-dm.org/vacu/electron-google-analytics)
 ![](https://img.shields.io/badge/code%20style-airbnb-green.svg)
 
 
@@ -51,7 +51,7 @@ npm i electron-google-analytics
 
 * Pageview
 
-  `Analytics#pageview(hostname, url, title, clientID)`
+  `Analytics#pageview(hostname, url, title, sessionDuration, clientID)`
   ```javascript
   return analytics.pageview('http://example.com', '/home', 'Example')
     .then((response) => {
@@ -60,7 +60,7 @@ npm i electron-google-analytics
       return err;
     });
   ```
-  If you want to keep the session you need to specify the `clientID`.
+  If you want to keep the session you need to specify the `clientID`. The `clientID` can be found in the promise `response` above.
 
 * Event
 

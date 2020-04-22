@@ -1,5 +1,7 @@
+const { net } = require('electron');
+
 import request from 'request';
-import uuidV4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 class Analytics {
   /**
@@ -65,17 +67,21 @@ class Analytics {
    * @param  {string} title    Title of the page
    * @param  {string} hostname Document hostname
    * @param  {string} clientID uuidV4
+   * @param  {string} sessDuration A string to force start or end a session
    *
    * @return {Promise}
    */
-  pageview(hostname, url, title, clientID) {
-  // pageview(hostname, url, title, sessDuration, clientID) {
+  pageview(hostname, url, title, clientID, sessDuration) {
     const params = {
       dh: hostname,
       dp: url,
       dt: title
-      // sc: sessDuration
     };
+
+    if (typeof sessDuration !== 'undefined') {
+      params.sc = sessDuration;
+    }
+
     return this.send('pageview', params, clientID);
   }
 
@@ -439,7 +445,7 @@ class Analytics {
       const formObj = {
         v: this.globalVersion,
         tid: this.globalTrackingID,
-        cid: clientID || uuidV4(),
+        cid: clientID || uuidv4(),
         t: hitType
       };
       if (params) Object.assign(formObj, params);
