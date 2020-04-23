@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "test": "cross-env NODE_ENV=test USE_ELECTRON_NET=true mocha --require babel-core/register"
+    "test": "cross-env NODE_ENV=test mocha --require @babel/register"
   },
   "keywords": [
     "google",
@@ -20,11 +20,10 @@
     "url": "git@github.com:vacu/electron-google-analytics.git"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.26.0",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/register": "^7.9.0",
     "braces": ">=2.3.1",
     "chai": "^4.2.0",
     "cross-env": "^7.0.2",
@@ -34,6 +33,7 @@
     "mocha": "^7.1.1"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.8.7",
     "electron-fetch": "^1.4.0",
     "uuid": "^7.0.3"
   }
