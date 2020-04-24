@@ -10,12 +10,7 @@ class Analytics {
   constructor(trackingID, {
     userAgent = '',
     debug = false,
-    version = 1,
-    electronOpts = {
-      useElectronNet: false,
-      session: null,
-      partition: null
-    }
+    version = 1
   } = {}) {
     // Debug
     this.globalDebug = debug;
@@ -30,6 +25,7 @@ class Analytics {
     this.globalTrackingID = trackingID;
     // Google API version
     this.globalVersion = version;
+    // Custom parameters
     this.customParams = {};
   }
 
@@ -409,7 +405,7 @@ class Analytics {
   } = {}, clientID) {
     const params = { utc: timingCtg, utv: timingVar, utt: timingTime };
 
-    if (timingLbl) params.url = timingLbl;
+    if (timingLbl) params.utl = timingLbl;
     if (dns) params.dns = dns;
     if (pageDownTime) params.pdt = pageDownTime;
     if (redirTime) params.rrt = redirTime;
@@ -429,7 +425,6 @@ class Analytics {
    * @return {Promise}
    */
   send(hitType, params, clientID) {
-    // return new Promise((resolve, reject) => {
     const formObj = {
       v: this.globalVersion,
       tid: this.globalTrackingID,
@@ -448,7 +443,6 @@ class Analytics {
     }
 
     const reqObj = {
-      // url,
       method: 'post',
       body: Object.keys(formObj).map(key => `${encodeURI(key)}=${encodeURI(formObj[key])}`).join('&')
     };
@@ -456,7 +450,6 @@ class Analytics {
     if (this.globalUserAgent !== '') {
       reqObj.headers = { 'User-Agent': this.globalUserAgent };
     }
-
 
     return fetch(url, reqObj)
       .then((res) => res.json())

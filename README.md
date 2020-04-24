@@ -44,14 +44,15 @@ npm i electron-google-analytics
     ```javascript
     analytics.set('uid', 123);
     ```
-    You also can remove setted parameter like this:
+* Remove parameter:
+
     ```javascript
     analytics.set('uid', null);
     ```
 
 * Pageview
 
-  `Analytics#pageview(hostname, url, title, sessionDuration, clientID)`
+  `Analytics#pageview(hostname, url, title, clientID, sessionDuration)`
   ```javascript
   return analytics.pageview('http://example.com', '/home', 'Example')
     .then((response) => {
