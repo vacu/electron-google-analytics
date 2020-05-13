@@ -20,7 +20,7 @@
     "url": "git@github.com:vacu/electron-google-analytics.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
