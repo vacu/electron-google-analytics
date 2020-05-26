@@ -1,5 +1,6 @@
-import fetch from 'electron-fetch'
+import fetch from 'electron-fetch';
 import { v4 as uuidv4 } from 'uuid';
+
 class Analytics {
   /**
    * Constructor
@@ -444,7 +445,7 @@ class Analytics {
 
     const reqObj = {
       method: 'post',
-      body: Object.keys(formObj).map(key => `${encodeURI(key)}=${encodeURI(formObj[key])}`).join('&')
+      body: Object.keys(formObj).map((key) => `${encodeURI(key)}=${encodeURI(formObj[key])}`).join('&')
     };
 
     if (this.globalUserAgent !== '') {
@@ -452,8 +453,21 @@ class Analytics {
     }
 
     return fetch(url, reqObj)
-      .then((res) => res.json())
-      .then((json) => {
+      .then((res) => {
+        let response = {};
+
+        if (res.headers.get('content-type') !== 'image/gif') {
+          response = res.json();
+        } else {
+          response = res.text();
+        }
+
+        if (res.status === 200) {
+          return response;
+        }
+
+        return Promise.reject(new Error(response));
+      }).then((json) => {
         if (this.globalDebug) {
           if (json.hitParsingResult[0].valid) {
             return { clientID: formObj.cid };
@@ -461,10 +475,7 @@ class Analytics {
         }
 
         return { clientID: formObj.cid };
-      })
-      .catch((err) => {
-        return new Error(err);
-      });
+      }).catch((err) => new Error(err));
   }
 }
 
