@@ -1,5 +1,5 @@
 import chai from 'chai';
-import Analytics from '../src/index';
+import Analytics from '../lib/index';
 
 const expect = chai.expect;
 const trackingID = (process.env.TRACKING_ID) ? process.env.TRACKING_ID : '';
