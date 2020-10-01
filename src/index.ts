@@ -1,27 +1,112 @@
-import fetch from 'electron-fetch';
-import { v4 as uuidv4 } from 'uuid';
+import fetch from "electron-fetch";
+import { v4 as uuidv4 } from "uuid";
+
+interface ICustomObject {
+  [key: string]: string | number;
+}
+
+interface IEvent {
+  evLabel?: string;
+  evValue?: string;
+  clientID?: string;
+}
+
+interface ITransaction {
+  trnAffil?: string;
+  trnRev?: string;
+  trnShip?: number;
+  trnTax?: number;
+  currCode?: string;
+}
+
+interface IRefund {
+  prdID?: string;
+  prdQty?: string;
+}
+
+interface IPurchase {
+  trnAffil?: string;
+  trnRev?: string;
+  trnTax?: number;
+  trnShip?: number;
+  trnCoupon?: string;
+  prdID?: string;
+  prdName?: string;
+  prdCtg?: string;
+  prdBrand?: string;
+  prdVar?: string;
+  prdPos?: string;
+}
+
+interface ICheckout {
+  prdID?: string;
+  prdName?: string;
+  prdCtg?: string;
+  prdBrand?: string;
+  prdVar?: string;
+  prdPrice?: number;
+  prdQty?: number;
+}
+
+interface IPromoImp {
+  promoID?: string;
+  promoName?: string;
+  promoCrt?: string;
+  promoPos?: string;
+}
+
+interface IPromoCk extends IPromoImp {
+  evLabel?: string;
+}
+
+interface IItem {
+  itemPrice?: number;
+  itemQty?: string;
+  itemSku?: string;
+  itemVariation?: string;
+  currCode?: string;
+}
+
+interface ITimingTrk {
+  timingLbl?: string;
+  dns?: number;
+  pageDownTime?: number;
+  redirTime?: number;
+  tcpConnTime?: number;
+  serverResTime?: number;
+}
 
 class Analytics {
+  private globalDebug: boolean;
+  private globalUserAgent: string;
+  private globalBaseURL: string;
+  private globalDebugURL: string;
+  private globalCollectURL: string;
+  private globalBatchURL: string;
+  private globalTrackingID: string;
+  private globalVersion: number;
+  private customParams: ICustomObject;
+
   /**
    * Constructor
    *
    * @param {string} trackingID
    * @param {Object} param1
    */
-  constructor(trackingID, {
-    userAgent = '',
-    debug = false,
-    version = 1
-  } = {}) {
+
+  constructor(
+    trackingID: string,
+    { userAgent = "", debug = false, version = 1 } = {}
+  ) {
     // Debug
     this.globalDebug = debug;
     // User-agent
     this.globalUserAgent = userAgent;
     // Links
-    this.globalBaseURL = 'https://www.google-analytics.com';
-    this.globalDebugURL = '/debug';
-    this.globalCollectURL = '/collect';
-    this.globalBatchURL = '/batch';
+    this.globalBaseURL = "https://www.google-analytics.com";
+    this.globalDebugURL = "/debug";
+    this.globalCollectURL = "/collect";
+    this.globalBatchURL = "/batch";
     // Google generated ID
     this.globalTrackingID = trackingID;
     // Google API version
@@ -37,7 +122,7 @@ class Analytics {
    * @param  {string} key     Parameter name
    * @param  {string} value   Parameter value
    */
-  set(key, value) {
+  public set(key: string, value: string): void {
     if (value !== null) {
       this.customParams[key] = value;
     } else {
@@ -56,18 +141,24 @@ class Analytics {
    *
    * @return {Promise}
    */
-  pageview(hostname, url, title, clientID, sessDuration) {
-    const params = {
+  public pageview(
+    hostname: string,
+    url: string,
+    title: string,
+    clientID?: string,
+    sessDuration?: string
+  ) {
+    const params: ICustomObject = {
       dh: hostname,
       dp: url,
-      dt: title
+      dt: title,
     };
 
-    if (typeof sessDuration !== 'undefined') {
+    if (typeof sessDuration !== "undefined") {
       params.sc = sessDuration;
     }
 
-    return this.send('pageview', params, clientID);
+    return this.send("pageview", params, clientID);
   }
 
   /**
@@ -81,13 +172,17 @@ class Analytics {
    *
    * @return {Promise}
    */
-  event(evCategory, evAction, { evLabel, evValue, clientID } = {}) {
-    const params = { ec: evCategory, ea: evAction };
+  public event(
+    evCategory: string,
+    evAction: string,
+    { evLabel, evValue, clientID }: IEvent = {}
+  ) {
+    const params: ICustomObject = { ec: evCategory, ea: evAction };
 
     if (evLabel) params.el = evLabel;
     if (evValue) params.ev = evValue;
 
-    return this.send('event', params, clientID);
+    return this.send("event", params, clientID);
   }
 
   /**
@@ -102,16 +197,23 @@ class Analytics {
    *
    * @return {Promise}
    */
-  screen(appName, appVer, appID, appInstallerID, screenName, clientID) {
+  public screen(
+    appName: string,
+    appVer: string,
+    appID: string,
+    appInstallerID: string,
+    screenName: string,
+    clientID?: string
+  ) {
     const params = {
       an: appName,
       av: appVer,
       aid: appID,
       aiid: appInstallerID,
-      cd: screenName
+      cd: screenName,
     };
 
-    return this.send('screenview', params, clientID);
+    return this.send("screenview", params, clientID);
   }
 
   /**
@@ -127,10 +229,12 @@ class Analytics {
    *
    * @return {Promise}
    */
-  transaction(trnID, {
-    trnAffil, trnRev, trnShip, trnTax, currCode
-  } = {}, clientID) {
-    const params = { ti: trnID };
+  public transaction(
+    trnID: string,
+    { trnAffil, trnRev, trnShip, trnTax, currCode }: ITransaction = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = { ti: trnID };
 
     if (trnAffil) params.ta = trnAffil;
     if (trnRev) params.tr = trnRev;
@@ -138,7 +242,7 @@ class Analytics {
     if (trnTax) params.tt = trnTax;
     if (currCode) params.cu = currCode;
 
-    return this.send('transaction', params, clientID);
+    return this.send("transaction", params, clientID);
   }
 
   /**
@@ -151,10 +255,15 @@ class Analytics {
    *
    * @return {Promise}
    */
-  social(socialAction, socialNetwork, socialTarget, clientID) {
+  public social(
+    socialAction: string,
+    socialNetwork: string,
+    socialTarget: string,
+    clientID?: string
+  ) {
     const params = { sa: socialAction, sn: socialNetwork, st: socialTarget };
 
-    return this.send('social', params, clientID);
+    return this.send("social", params, clientID);
   }
 
   /**
@@ -166,10 +275,10 @@ class Analytics {
    *
    * @return {Promise}
    */
-  exception(exDesc, exFatal, clientID) {
+  public exception(exDesc: string, exFatal: number, clientID?: string) {
     const params = { exd: exDesc, exf: exFatal };
 
-    return this.send('exception', params, clientID);
+    return this.send("exception", params, clientID);
   }
 
   /**
@@ -185,19 +294,26 @@ class Analytics {
    *
    * @returns {Promise}
    */
-  refund(trnID, evCategory = 'Ecommerce', evAction = 'Refund', nonInteraction = 1, { prdID, prdQty } = {}, clientID) {
-    const params = {
+  public refund(
+    trnID: string,
+    evCategory = "Ecommerce",
+    evAction = "Refund",
+    nonInteraction = 1,
+    { prdID, prdQty }: IRefund = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
       ec: evCategory,
       ea: evAction,
       ni: nonInteraction,
       ti: trnID,
-      pa: 'refund'
+      pa: "refund",
     };
 
     if (prdID) params.pr1id = prdID;
     if (prdQty) params.pr1qt = prdQty;
 
-    return this.send('event', params, clientID);
+    return this.send("event", params, clientID);
   }
 
   /**
@@ -220,16 +336,32 @@ class Analytics {
    * @param  {string} clientID      uuidV4
    * @return {Promise}
    */
-  purchase(hostname, url, title, transactionID, {
-    trnAffil, trnRev, trnTax, trnShip, trnCoupon,
-    prdID, prdName, prdCtg, prdBrand, prdVar, prdPos
-  } = {}, clientID) {
-    const params = {
+  public purchase(
+    hostname: string,
+    url: string,
+    title: string,
+    transactionID: string,
+    {
+      trnAffil,
+      trnRev,
+      trnTax,
+      trnShip,
+      trnCoupon,
+      prdID,
+      prdName,
+      prdCtg,
+      prdBrand,
+      prdVar,
+      prdPos,
+    }: IPurchase = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
       dh: hostname,
       dp: url,
       dt: title,
       ti: transactionID,
-      pa: 'purchase'
+      pa: "purchase",
     };
 
     // Transaction params
@@ -246,7 +378,7 @@ class Analytics {
     if (prdVar) params.pr1va = prdVar;
     if (prdPos) params.pr1p = prdPos;
 
-    return this.send('pageview', params, clientID);
+    return this.send("pageview", params, clientID);
   }
 
   /**
@@ -266,16 +398,31 @@ class Analytics {
    * @param  {string} clientID     uuidV4
    * @return {Promise}
    */
-  checkout(hostname, url, title, checkoutStep, checkoutOpt, {
-    prdID, prdName, prdCtg, prdBrand, prdVar, prdPrice, prdQty
-  } = {}, clientID) {
-    const params = {
+
+  public checkout(
+    hostname: string,
+    url: string,
+    title: string,
+    checkoutStep: string,
+    checkoutOpt: string,
+    {
+      prdID,
+      prdName,
+      prdCtg,
+      prdBrand,
+      prdVar,
+      prdPrice,
+      prdQty,
+    }: ICheckout = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
       dh: hostname,
       dp: url,
       dt: title,
-      pa: 'checkout',
+      pa: "checkout",
       cos: checkoutStep,
-      col: checkoutOpt
+      col: checkoutOpt,
     };
 
     if (prdID) params.pr1id = prdID;
@@ -286,7 +433,7 @@ class Analytics {
     if (prdPrice) params.pr1pr = prdPrice;
     if (prdQty) params.pr1qt = prdQty;
 
-    return this.send('pageview', params, clientID);
+    return this.send("pageview", params, clientID);
   }
 
   /**
@@ -298,17 +445,23 @@ class Analytics {
    * @param  {string} clientID     uuidV4
    * @return {Promise}
    */
-  checkoutOpt(evCategory, evAction, checkoutStep, checkoutOpt, clientID) {
-    const params = {
+  public checkoutOpt(
+    evCategory: string,
+    evAction: string,
+    checkoutStep?: string,
+    checkoutOpt?: string,
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
       ec: evCategory,
       ea: evAction,
-      pa: 'checkout_option'
+      pa: "checkout_option",
     };
 
     if (checkoutStep) params.cos = checkoutStep;
     if (checkoutOpt) params.col = checkoutOpt;
 
-    return this.send('event', params, clientID);
+    return this.send("event", params, clientID);
   }
 
   /**
@@ -319,13 +472,17 @@ class Analytics {
    * @param {*} param3
    * @param {*} clientID
    */
-  promoImp(hostname, url, title, {
-    promoID, promoName, promoCrt, promoPos
-  } = {}, clientID) {
-    const params = {
+  public promoImp(
+    hostname: string,
+    url: string,
+    title: string,
+    { promoID, promoName, promoCrt, promoPos }: IPromoImp = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
       dh: hostname,
       dp: url,
-      dt: title
+      dt: title,
     };
 
     if (promoID) params.promo1id = promoID;
@@ -333,7 +490,7 @@ class Analytics {
     if (promoCrt) params.promo1cr = promoCrt;
     if (promoPos) params.promo1ps = promoPos;
 
-    return this.send('pageview', params, clientID);
+    return this.send("pageview", params, clientID);
   }
 
   /**
@@ -343,13 +500,16 @@ class Analytics {
    * @param {*} param2
    * @param {*} clientID
    */
-  promoCk(evCategory, evAction, {
-    evLabel, promoID, promoName, promoCrt, promoPos
-  } = {}, clientID) {
-    const params = {
+  public promoCk(
+    evCategory: string,
+    evAction: string,
+    { evLabel, promoID, promoName, promoCrt, promoPos }: IPromoCk = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
       ec: evCategory,
       ea: evAction,
-      promos: 'click'
+      promos: "click",
     };
 
     if (evLabel) params.el = evLabel;
@@ -358,7 +518,7 @@ class Analytics {
     if (promoCrt) params.promo1cr = promoCrt;
     if (promoPos) params.promo1ps = promoPos;
 
-    return this.send('event', params, clientID);
+    return this.send("event", params, clientID);
   }
 
   /**
@@ -373,10 +533,13 @@ class Analytics {
    * @param  {string} clientID      uuidV4
    * @return {Promise}
    */
-  item(trnID, itemName, {
-    itemPrice, itemQty, itemSku, itemVariation, currCode
-  } = {}, clientID) {
-    const params = { ti: trnID, in: itemName };
+  public item(
+    trnID: string,
+    itemName: string,
+    { itemPrice, itemQty, itemSku, itemVariation, currCode }: IItem = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = { ti: trnID, in: itemName };
 
     if (itemPrice) params.ip = itemPrice;
     if (itemQty) params.iq = itemQty;
@@ -384,7 +547,7 @@ class Analytics {
     if (itemVariation) params.iv = itemVariation;
     if (currCode) params.cu = currCode;
 
-    return this.send('item', params, clientID);
+    return this.send("item", params, clientID);
   }
 
   /**
@@ -401,10 +564,25 @@ class Analytics {
    * @param  {string} clientID      uuidV4
    * @return {Promise}
    */
-  timingTrk(timingCtg, timingVar, timingTime, {
-    timingLbl, dns, pageDownTime, redirTime, tcpConnTime, serverResTime
-  } = {}, clientID) {
-    const params = { utc: timingCtg, utv: timingVar, utt: timingTime };
+  public timingTrk(
+    timingCtg: string,
+    timingVar: string,
+    timingTime: number,
+    {
+      timingLbl,
+      dns,
+      pageDownTime,
+      redirTime,
+      tcpConnTime,
+      serverResTime,
+    }: ITimingTrk = {},
+    clientID?: string
+  ) {
+    const params: ICustomObject = {
+      utc: timingCtg,
+      utv: timingVar,
+      utt: timingTime,
+    };
 
     if (timingLbl) params.utl = timingLbl;
     if (dns) params.dns = dns;
@@ -413,7 +591,7 @@ class Analytics {
     if (tcpConnTime) params.tcp = tcpConnTime;
     if (serverResTime) params.srt = serverResTime;
 
-    return this.send('timing', params, clientID);
+    return this.send("timing", params, clientID);
   }
 
   /**
@@ -425,12 +603,12 @@ class Analytics {
    *
    * @return {Promise}
    */
-  send(hitType, params, clientID) {
-    const formObj = {
+  private send(hitType: string, params: ICustomObject, clientID?: string) {
+    const formObj: ICustomObject = {
       v: this.globalVersion,
       tid: this.globalTrackingID,
       cid: clientID || uuidv4(),
-      t: hitType
+      t: hitType,
     };
     if (params) Object.assign(formObj, params);
 
@@ -444,19 +622,21 @@ class Analytics {
     }
 
     const reqObj = {
-      method: 'post',
-      body: Object.keys(formObj).map((key) => `${encodeURI(key)}=${encodeURI(formObj[key])}`).join('&')
+      method: "post",
+      body: Object.keys(formObj)
+        .map((key) => `${encodeURI(key)}=${encodeURI(formObj[key] as string)}`)
+        .join("&"),
+      headers:
+        this.globalUserAgent !== ""
+          ? { "User-Agent": this.globalUserAgent }
+          : undefined,
     };
-
-    if (this.globalUserAgent !== '') {
-      reqObj.headers = { 'User-Agent': this.globalUserAgent };
-    }
 
     return fetch(url, reqObj)
       .then((res) => {
         let response = {};
 
-        if (res.headers.get('content-type') !== 'image/gif') {
+        if (res.headers.get("content-type") !== "image/gif") {
           response = res.json();
         } else {
           response = res.text();
@@ -466,8 +646,9 @@ class Analytics {
           return response;
         }
 
-        return Promise.reject(new Error(response));
-      }).then((json) => {
+        return Promise.reject(new Error(response as string));
+      })
+      .then((json: any) => {
         if (this.globalDebug) {
           if (json.hitParsingResult[0].valid) {
             return { clientID: formObj.cid };
@@ -475,7 +656,8 @@ class Analytics {
         }
 
         return { clientID: formObj.cid };
-      }).catch((err) => new Error(err));
+      })
+      .catch((err) => new Error(err));
   }
 }
 
